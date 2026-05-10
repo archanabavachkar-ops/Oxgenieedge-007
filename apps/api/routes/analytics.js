@@ -1,17 +1,17 @@
-
 /**
  * File: apps/api/routes/analytics.js
  * Purpose: Analytics routes (GET dashboard stats, GET performance metrics, GET activity reports)
  */
 
-const express = require('express');
+import express from 'express';
+
 const router = express.Router();
 
 /**
  * GET /api/analytics/dashboard
  * Purpose: Get dashboard statistics
  * TODO: Implement dashboard stats logic
- * - Add authentication middleware
+ * - Add authentication import express from 'express';
  * - Calculate total leads, active users, assignments
  * - Calculate conversion rates
  * - Get recent activity
