@@ -10,7 +10,6 @@ import analyticsRoutes from './routes/analytics.js';
 import botRoutes from './routes/bot.js';
 import escalationRoutes from './routes/escalations.js';
 import automationRoutes from './routes/automations.js';
-import analyticsRoutes from './routes/analytics.js';
 import webhooksRoutes from './src/routes/webhooks.js';
 import logger from './utils/logger.js';
 import whatsappRoutes from './routes/whatsappWebhooks.js';
