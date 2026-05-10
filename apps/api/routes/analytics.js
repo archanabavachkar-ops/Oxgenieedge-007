@@ -52,4 +52,4 @@ router.get('/activity', async (req, res) => {
   res.status(501).json({ error: 'Activity reports endpoint not implemented yet' });
 });
 
-module.exports = router;
+export default router;
