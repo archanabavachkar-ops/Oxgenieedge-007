@@ -54,16 +54,18 @@ pocketbaseClient.beforeSend = async function (url, options) {
 
 (async () => {
     try {
-        await waitForHealth();
+       // await waitForHealth();
 
-        if (!pocketbaseClient.authStore.isValid && !authPromise) {
-            authPromise = pocketbaseClient.collection('_superusers').authWithPassword(
-                process.env.PB_SUPERUSER_EMAIL,
-                process.env.PB_SUPERUSER_PASSWORD,
-            ).finally(() => {
-                authPromise = null;
-            });
-        }
+        /*
+if (!pocketbaseClient.authStore.isValid && !authPromise) {
+    authPromise = pocketbaseClient.collection('_superusers').authWithPassword(
+        process.env.PB_SUPERUSER_EMAIL,
+        process.env.PB_SUPERUSER_PASSWORD,
+    ).finally(() => {
+        authPromise = null;
+    });
+}
+*/
         
         if (authPromise) {
             await authPromise;
