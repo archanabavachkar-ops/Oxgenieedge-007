@@ -1,3 +1,5 @@
+import integrationRoutes from './src/routes/integrations.js';
+import reportRoutes from './src/routes/crm-reports.js';
 import crmRoutes from './src/routes/crm-ai.js';
 import 'dotenv/config';
 import express from 'express';
@@ -11,7 +13,7 @@ import adminRoutes from './routes/admin.js';
 import botRoutes from './routes/bot.js';
 import escalationRoutes from './routes/escalations.js';
 import automationRoutes from './routes/automations.js';
-import webhooksRoutes from './src/routes/webhooks.js';
+import webhookRoutes from './src/routes/webhooks.js';
 import logger from './utils/logger.js';
 import whatsappRoutes from './routes/whatsappWebhooks.js';
 import PocketBase from 'pocketbase';
@@ -77,10 +79,10 @@ app.use('/api/escalations', authMiddleware, escalationRoutes);
 app.use('/crm', authMiddleware, crmRoutes);
 app.use('/analytics', authMiddleware, analyticsRoutes);
 app.use('/admin', authMiddleware, adminRoutes);
-app.use('/automations', authMiddleware, require('./routes/automations.js').default);
-app.use('/integrations', authMiddleware, require('./src/routes/integrations.js').default);
-app.use('/reports', authMiddleware, require('./src/routes/crm-reports.js').default);
-app.use('/webhooks', require('./src/routes/webhooks.js').default);
+app.use('/automations', authMiddleware, automationRoutes);
+app.use('/integrations', authMiddleware, integrationRoutes);
+app.use('/reports', authMiddleware, reportRoutes);
+app.use('/webhooks', webhookRoutes);
 
 // Existing routes
 app.use('/api/automations', authMiddleware, automationRoutes);
