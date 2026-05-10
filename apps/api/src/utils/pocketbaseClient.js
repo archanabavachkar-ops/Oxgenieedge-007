@@ -3,7 +3,7 @@ dotenv.config();
 import Pocketbase from 'pocketbase';
 import logger from './logger.js';
 
-const POCKETBASE_HOST = `https://${process.env.WEBSITE_DOMAIN}/hcgi/platform`;
+const POCKETBASE_HOST = process.env.POCKETBASE_URL || 'http://127.0.0.1:8090';
 
 async function waitForHealth({ retries = 10, delayMs = 1000 } = {}) {
     for (let i = 1; i <= retries; i++) {

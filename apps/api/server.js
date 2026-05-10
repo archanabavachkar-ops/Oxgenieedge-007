@@ -13,7 +13,7 @@ import adminRoutes from './routes/admin.js';
 import botRoutes from './routes/bot.js';
 import escalationRoutes from './routes/escalations.js';
 import automationRoutes from './routes/automations.js';
-import webhookRoutes from './src/routes/webhooks.js';
+import webhooksRoutes from './src/routes/webhooks.js';
 import logger from './utils/logger.js';
 import whatsappRoutes from './routes/whatsappWebhooks.js';
 import PocketBase from 'pocketbase';
@@ -82,7 +82,7 @@ app.use('/admin', authMiddleware, adminRoutes);
 app.use('/automations', authMiddleware, automationRoutes);
 app.use('/integrations', authMiddleware, integrationRoutes);
 app.use('/reports', authMiddleware, reportRoutes);
-app.use('/webhooks', webhookRoutes);
+app.use('/webhooks', webhooksRoutes);
 
 // Existing routes
 app.use('/api/automations', authMiddleware, automationRoutes);
