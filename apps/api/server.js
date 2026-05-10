@@ -77,7 +77,6 @@ app.use('/api/escalations', authMiddleware, escalationRoutes);
 app.use('/crm', authMiddleware, crmRoutes);
 app.use('/analytics', authMiddleware, analyticsRoutes);
 app.use('/admin', authMiddleware, adminRoutes);
-app.use('/call-centre', authMiddleware, require('./src/routes/callCentre.js').default);
 app.use('/automations', authMiddleware, require('./routes/automations.js').default);
 app.use('/integrations', authMiddleware, require('./src/routes/integrations.js').default);
 app.use('/reports', authMiddleware, require('./src/routes/crm-reports.js').default);
