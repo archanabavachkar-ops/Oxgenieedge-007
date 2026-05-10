@@ -5,6 +5,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
+import analyticsRoutes from './routes/analytics.js';
 
 import botRoutes from './routes/bot.js';
 import escalationRoutes from './routes/escalations.js';
@@ -74,7 +75,7 @@ app.use('/api/escalations', authMiddleware, escalationRoutes);
 
 // ✅ CRM Modules
 app.use('/crm', authMiddleware, crmRoutes);
-app.use('/analytics', authMiddleware, require('./routes/analytics.js').default);
+app.use('/analytics', authMiddleware, analyticsRoutes);
 app.use('/admin', authMiddleware, require('./src/routes/admin.js').default);
 app.use('/call-centre', authMiddleware, require('./src/routes/callCentre.js').default);
 app.use('/automations', authMiddleware, require('./routes/automations.js').default);
