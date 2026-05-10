@@ -1,3 +1,5 @@
+import integrationRoutes from './src/routes/integrations.js';
+import reportRoutes from './src/routes/crm-reports.js';
 import crmRoutes from './src/routes/crm-ai.js';
 import 'dotenv/config';
 import express from 'express';
@@ -5,11 +7,12 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
+import analyticsRoutes from './routes/analytics.js';
+import adminRoutes from './routes/admin.js';
 
 import botRoutes from './routes/bot.js';
 import escalationRoutes from './routes/escalations.js';
 import automationRoutes from './routes/automations.js';
-import analyticsRoutes from './routes/analytics.js';
 import webhooksRoutes from './src/routes/webhooks.js';
 import logger from './utils/logger.js';
 import whatsappRoutes from './routes/whatsappWebhooks.js';
@@ -74,13 +77,12 @@ app.use('/api/escalations', authMiddleware, escalationRoutes);
 
 // ✅ CRM Modules
 app.use('/crm', authMiddleware, crmRoutes);
-app.use('/analytics', authMiddleware, require('./routes/analytics.js').default);
-app.use('/admin', authMiddleware, require('./src/routes/admin.js').default);
-app.use('/call-centre', authMiddleware, require('./src/routes/callCentre.js').default);
-app.use('/automations', authMiddleware, require('./routes/automations.js').default);
-app.use('/integrations', authMiddleware, require('./src/routes/integrations.js').default);
-app.use('/reports', authMiddleware, require('./src/routes/crm-reports.js').default);
-app.use('/webhooks', require('./src/routes/webhooks.js').default);
+app.use('/analytics', authMiddleware, analyticsRoutes);
+app.use('/admin', authMiddleware, adminRoutes);
+app.use('/automations', authMiddleware, automationRoutes);
+app.use('/integrations', authMiddleware, integrationRoutes);
+app.use('/reports', authMiddleware, reportRoutes);
+app.use('/webhooks', webhooksRoutes);
 
 // Existing routes
 app.use('/api/automations', authMiddleware, automationRoutes);
