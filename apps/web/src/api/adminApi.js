@@ -1,4 +1,4 @@
-
+import { API_BASE_URL } from '../config/api';
 import pb from '@/lib/pocketbaseClient';
 
 // --- Existing Functions ---
