@@ -98,51 +98,63 @@ export const AuthProvider = ({ children }) => {
   };
 
   // --- Admin User Methods ---
-  const loginAdmin = async (email, password) => {
-    console.log(`[AuthContext] Admin login attempt for: ${email}`);
-    if (!pb) {
-      throw new Error('Database connection error');
+const loginAdmin = async (email, password) => {
+  console.log(`[AuthContext] Admin login attempt for: ${email}`);
+
+  if (!pb) {
+    throw new Error('Database connection error');
+  }
+
+  try {
+    setIsLoading(true);
+
+    // Authenticate using PocketBase users collection
+    const authData = await pb.collection('users').authWithPassword(
+      email,
+      password,
+      { $autoCancel: false }
+    );
+
+    console.log(`[AuthContext] Admin login successful for: ${email}`);
+
+    // Create temporary admin session object
+    const adminUser = {
+      id: authData.record?.id || 'admin',
+      email: authData.record?.email || email,
+      fullName:
+        authData.record?.name ||
+        authData.record?.full_name ||
+        authData.record?.fullName ||
+        'Administrator',
+      role: 'admin',
+      status: 'active',
+    };
+
+    // Save admin session
+    localStorage.setItem('adminUser', JSON.stringify(adminUser));
+
+    setCurrentAdmin(adminUser);
+    setIsAdminLoggedIn(true);
+
+    return adminUser;
+  } catch (error) {
+    console.error(`[AuthContext] Admin login error:`, error);
+    console.error(
+      `[AuthContext] Admin error details:`,
+      error.response || error.message
+    );
+
+    if (error.status === 404 || error.status === 400) {
+      throw new Error('Invalid email or password');
     }
 
-    try {
-      setIsLoading(true);
-      const adminRecord = await pb.collection('admin_users').getFirstListItem(`email="${email}"`, {
-        $autoCancel: false
-      });
-
-      if (adminRecord.password !== password) {
-        console.warn(`[AuthContext] Admin password mismatch for: ${email}`);
-        throw new Error('Invalid email or password');
-      }
-
-      console.log(`[AuthContext] Admin login successful for: ${email}`);
-
-      const adminUser = {
-        id: adminRecord.id,
-        email: adminRecord.email,
-        fullName: adminRecord.fullName,
-        role: adminRecord.role,
-        status: adminRecord.status,
-      };
-
-      localStorage.setItem('adminUser', JSON.stringify(adminUser));
-      setCurrentAdmin(adminUser);
-      setIsAdminLoggedIn(true);
-
-      return adminUser;
-    } catch (error) {
-      console.error(`[AuthContext] Admin login error:`, error);
-      console.error(`[AuthContext] Admin error details:`, error.response || error.message);
-      
-      if (error.status === 404) {
-        throw new Error('Invalid email or password');
-      }
-
-      throw new Error(error.message === 'Invalid email or password' ? error.message : 'Login failed due to a server error.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    throw new Error(
+      error.message || 'Login failed due to a server error.'
+    );
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const logoutAdmin = () => {
     console.log(`[AuthContext] Logging out admin...`);
