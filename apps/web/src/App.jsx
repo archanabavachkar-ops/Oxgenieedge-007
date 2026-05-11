@@ -60,7 +60,7 @@ import TaskDashboardPage from './pages/crm/TaskDashboardPage.jsx';
 import InteractionsPage from './pages/crm/InteractionsPage.jsx';
 import ReportsPage from './pages/crm/ReportsPage.jsx';
 import IntegrationsMainPage from './pages/crm/IntegrationsMainPage.jsx';
-import CrmDashboardPage from './pages/crm/CrmDashboardPage.jsx';
+import CrmDashboardPage from './pages/crm/CRMDashboardPage.jsx';
 import AgentPerformancePage from './pages/crm/AgentPerformancePage.jsx';
 import EscalationsPage from './pages/crm/EscalationsPage.jsx';
 import AutomationRulesPage from './pages/crm/AutomationRulesPage.jsx';
