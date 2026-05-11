@@ -291,7 +291,7 @@ export default defineConfig({
 
   preview: {
     allowedHosts: ['web-production-6466b.up.railway.app']
-  }
+  },
 })
 	customLogger: logger,
 	plugins: [
