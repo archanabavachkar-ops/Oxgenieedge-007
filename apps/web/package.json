@@ -5,9 +5,9 @@
   "private": true,
   "scripts": {
     "dev": "vite --host :: --port 3000",
-    "build": "vite build --outDir ../../dist/apps/web",
-    "start": "serve -s ../../dist/apps/web -l $PORT",
-    "preview": "serve -s ../../dist/apps/web -l $PORT",
+    "build": "vite build",
+    "start": "serve -s dist -l $PORT",
+    "preview": "serve -s dist -l $PORT",
     "lint": "eslint . --quiet",
     "lint:warn": "eslint ."
   },
