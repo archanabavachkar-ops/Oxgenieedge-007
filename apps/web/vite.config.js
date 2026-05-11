@@ -285,9 +285,14 @@ logger.error = (msg, options) => {
 }
 
 export default defineConfig({
-	optimizeDeps: {
-		include: allDeps,
-	},
+  optimizeDeps: {
+    include: allDeps,
+  },
+
+  preview: {
+    allowedHosts: ['web-production-6466b.up.railway.app']
+  }
+})
 	customLogger: logger,
 	plugins: [
 		...(isDev ? [inlineEditPlugin(), editModeDevPlugin(), selectionModePlugin(), iframeRouteRestorationPlugin(), pocketbaseAuthPlugin()] : []),
