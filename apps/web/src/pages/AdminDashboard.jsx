@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import CrmDashboardPage from '@/pages/crm/Temp.jsx';
+import CrmDashboardPage from '@/pages/crm/CrmDashboardPage.jsx';
 
 const AdminDashboard = () => {
   // The prompt requested to render the CRM dashboard as the default admin view.
