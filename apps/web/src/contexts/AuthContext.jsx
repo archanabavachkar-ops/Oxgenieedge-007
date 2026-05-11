@@ -109,26 +109,26 @@ const loginAdmin = async (email, password) => {
     setIsLoading(true);
 
     // Authenticate using PocketBase users collection
-    const authData = await pb.collection('users').authWithPassword(
-      email,
-      password,
-      { $autoCancel: false }
-    );
+const authData = await pb.collection('users').authWithPassword(
+  email,
+  password,
+  { $autoCancel: false }
+);
 
-    console.log(`[AuthContext] Admin login successful for: ${email}`);
+console.log(`[AuthContext] Admin login successful for: ${email}`);
 
-    // Create temporary admin session object
-    const adminUser = {
-      id: authData.record?.id || 'admin',
-      email: authData.record?.email || email,
-      fullName:
-        authData.record?.name ||
-        authData.record?.full_name ||
-        authData.record?.fullName ||
-        'Administrator',
-      role: 'admin',
-      status: 'active',
-    };
+// Create temporary admin session object
+const adminUser = {
+  id: authData.record?.id || 'admin',
+  email: authData.record?.email || email,
+  fullName:
+    authData.record?.name ||
+    authData.record?.full_name ||
+    authData.record?.fullName ||
+    'Administrator',
+  role: 'admin',
+  status: 'active',
+};
 
     // Save admin session
     localStorage.setItem('adminUser', JSON.stringify(adminUser));
