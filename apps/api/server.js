@@ -32,17 +32,11 @@ const PORT = process.env.PORT || 3001;
 // 🛡️ Security
 app.use(helmet());
 app.use(cors({
-  origin: [
-    'https://web-production-6466b.up.railway.app',
-    'https://oxgenieedge.com',
-    'https://www.oxgenieedge.com',
-    'http://localhost:3000',
-    'http://localhost:5173'
-  ],
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 app.options('*', cors());
 
 // 📊 Logging
