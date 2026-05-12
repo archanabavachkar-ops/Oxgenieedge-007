@@ -248,10 +248,10 @@ export default function ContactPage() {
                   className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 >
                   <option value="">Select Budget</option>
-                  <option value="under_1000">Under ₹1,000</option>
-                  <option value="1000_5000">₹1,000 - ₹5,000</option>
-                  <option value="5000_25000">₹5,000 - ₹25,000</option>
-                  <option value="25000_plus">₹25,000+</option>
+                  <option value="under_25000">Under ₹25,000</option>
+                  <option value="25000_50000">₹25,000 - ₹50,000</option>
+                  <option value="50000_100000">₹50,000 - ₹1,00,000</option>
+                  <option value="100000_plus">₹1,,000+</option>
                 </select>
               </div>
 
