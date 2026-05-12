@@ -1,3 +1,4 @@
+import leadsRoutes from './src/routes/leads.js';
 import integrationRoutes from './src/routes/integrations.js';
 import reportRoutes from './src/routes/crm-reports.js';
 import crmRoutes from './src/routes/crm-ai.js';
@@ -32,14 +33,17 @@ const PORT = process.env.PORT || 3001;
 app.use(helmet());
 app.use(cors({
   origin: [
+    'https://web-production-6466b.up.railway.app',
     'https://oxgenieedge.com',
     'https://www.oxgenieedge.com',
-    'https://web-production-6466b.up.railway.app',
     'http://localhost:3000',
-    'http://localhost:5173',
+    'http://localhost:5173'
   ],
-  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
+app.options('*', cors());
 
 // 📊 Logging
 app.use(morgan('combined'));
@@ -91,6 +95,7 @@ app.use('/webhooks', webhooksRoutes);
 app.use('/api/automations', authMiddleware, automationRoutes);
 app.use('/api/analytics', authMiddleware, analyticsRoutes);
 app.use('/api/webhooks', webhooksRoutes);
+app.use('/api/leads', leadsRoutes);
 
 // ✅ WhatsApp webhook (NO AUTH)
 app.use('/api/webhooks/whatsapp', whatsappRoutes);
@@ -179,27 +184,6 @@ app.get('/api/test', (req, res) => {
     success: true,
     message: 'API working',
   });
-});
-
-// CONTACTS API
-app.post('/api/contacts', async (req, res) => {
-  try {
-    console.log('Contact API Hit');
-
-    res.json({
-      success: true,
-      message: 'Contact received successfully',
-      data: req.body,
-    });
-
-  } catch (error) {
-    console.error(error);
-
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
 });
 
 // Root Endpoint
