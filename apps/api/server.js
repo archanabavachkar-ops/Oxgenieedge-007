@@ -90,7 +90,15 @@ app.use('/api/automations', authMiddleware, automationRoutes);
 app.use('/api/analytics', authMiddleware, analyticsRoutes);
 app.use('/api/webhooks', webhooksRoutes);
 console.log('LEADS ROUTE IMPORTED:', leadsRoutes);
+console.log('LEADS ROUTE LOADED');
+console.log(leadsRoutes);
 app.use('/api/leads', leadsRoutes);
+app.get('/api/debug-route', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Debug route working'
+  });
+});
 
 // ✅ WhatsApp webhook (NO AUTH)
 app.use('/api/webhooks/whatsapp', whatsappRoutes);
