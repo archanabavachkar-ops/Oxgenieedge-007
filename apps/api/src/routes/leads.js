@@ -27,35 +27,37 @@ router.post('/', async (req, res) => {
 
     const {
       name,
-      phone,
+      mobile,
       email,
       source,
       status,
       value,
-      companyName,
+      company,
       designation,
       budgetRange,
-      preferredContactMethod,
+      preferredContact,
       serviceInterest,
-      description
+      description,
+      stage
     } = req.body;
 
     const record = await pb.collection('leads').create({
       name,
-      mobile: phone,
+      mobile,
       email,
-      source: source || 'website_contact_form',
-      status: status || 'new',
-      value: value || 0,
-      companyName: companyName || '',
-      designation: designation || '',
-      budgetRange: budgetRange || '',
-      preferredContactMethod: preferredContactMethod || '',
-      serviceInterest: serviceInterest || '',
-      description: description || ''
+      source,
+      status,
+      value,
+      company,
+      designation,
+      budgetRange,
+      preferredContact,
+      serviceInterest,
+      description,
+      stage
     });
 
-    console.log("Lead created successfully:", record);
+    console.log("Lead created:", record);
 
     return res.status(201).json({
       success: true,
@@ -63,7 +65,7 @@ router.post('/', async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Lead creation failed:", error);
+    console.error("Lead API Error:", error);
 
     return res.status(500).json({
       success: false,
