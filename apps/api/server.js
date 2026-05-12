@@ -89,6 +89,7 @@ app.use('/webhooks', webhooksRoutes);
 app.use('/api/automations', authMiddleware, automationRoutes);
 app.use('/api/analytics', authMiddleware, analyticsRoutes);
 app.use('/api/webhooks', webhooksRoutes);
+console.log('LEADS ROUTE IMPORTED:', leadsRoutes);
 app.use('/api/leads', leadsRoutes);
 
 // ✅ WhatsApp webhook (NO AUTH)
