@@ -16,9 +16,13 @@ export default function ContactPage() {
     name: "",
     email: "",
     phone: "",
+    company: "",
+    designation: "",
+    budgetRange: "",
+    preferredContact: "",
     subject: "",
     message: "",
-  });
+});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,6 +46,10 @@ export default function ContactPage() {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
+        company: formData.company,
+        designation: formData.designation,
+        budgetRange: formData.budgetRange,
+        preferredContact: formData.preferredContact,
         subject: formData.subject,
         message: formData.message,
       };
@@ -77,6 +85,10 @@ export default function ContactPage() {
         name: "",
         email: "",
         phone: "",
+        company: "",
+        designation: "",
+        budgetRange: "",
+        preferredContact: "",
         subject: "",
         message: "",
       });
@@ -197,6 +209,68 @@ export default function ContactPage() {
                     className="w-full text-foreground placeholder:text-muted-foreground"
                   />
                 </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="company">Company Name</Label>
+
+                <Input
+                  id="company"
+                  name="company"
+                  placeholder="Your Company"
+                  value={formData.company}
+                  onChange={handleChange}
+                  className="w-full text-foreground placeholder:text-muted-foreground"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="designation">Designation</Label>
+
+                <Input
+                  id="designation"
+                  name="designation"
+                  placeholder="CEO, Founder, Sales Head..."
+                  value={formData.designation}
+                  onChange={handleChange}
+                  className="w-full text-foreground placeholder:text-muted-foreground"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="budgetRange">Budget Range</Label>
+
+                <select
+                  id="budgetRange"
+                  name="budgetRange"
+                  value={formData.budgetRange}
+                  onChange={handleChange}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="">Select Budget</option>
+                  <option value="under_1000">Under ₹1,000</option>
+                  <option value="1000_5000">₹1,000 - ₹5,000</option>
+                  <option value="5000_25000">₹5,000 - ₹25,000</option>
+                  <option value="25000_plus">₹25,000+</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="preferredContact">
+                  Preferred Contact Method
+                </Label>
+
+                <select
+                  id="preferredContact"
+                  name="preferredContact"
+                  value={formData.preferredContact}
+                  onChange={handleChange}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="">Select Method</option>
+                  <option value="email">Email</option>
+                  <option value="phone">Phone</option>
+                  <option value="whatsapp">WhatsApp</option>
+                </select>
               </div>
 
               <div className="space-y-2">
