@@ -59,7 +59,7 @@ export default function ContactPage() {
       };
 
       // (3) Call apiServerClient.fetch
-      const response = await fetch('/api/leads', {
+      const response = await fetch('https://amusing-happiness-production-81e3.up.railway.app/api/leads', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -67,15 +67,18 @@ export default function ContactPage() {
         body: JSON.stringify(payload)
       });
 
+      const rawText = await response.text();
+
+      console.log("RAW RESPONSE:", rawText);
+
       let data = {};
 
       try {
-        data = await response.json();
+       data = JSON.parse(rawText);
       } catch (err) {
-        data = {
-          success: false,
-          error: 'Invalid server response',
-        };
+        console.error("JSON Parse Error:", err);
+
+        throw new Error(`Server returned invalid JSON: ${rawText}`);
       }
 
       if (!response.ok || !data.success) {
