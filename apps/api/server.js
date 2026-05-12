@@ -33,6 +33,8 @@ app.use(helmet());
 app.use(cors({
   origin: [
     'https://oxgenieedge.com',
+    'https://www.oxgenieedge.com',
+    'https://web-production-6466b.up.railway.app',
     'http://localhost:3000',
     'http://localhost:5173',
   ],
