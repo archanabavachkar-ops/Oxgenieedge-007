@@ -25,7 +25,9 @@ process.on('uncaughtException', (error) => {
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  logger.error('Unhandled rejection at:', promise, 'reason:', reason);
+  console.error('UNHANDLED REJECTION');
+  console.error('Promise:', promise);
+  console.error('Reason:', reason);
 });
 
 process.on('SIGINT', async () => {
