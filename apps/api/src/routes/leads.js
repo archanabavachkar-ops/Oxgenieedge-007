@@ -23,59 +23,51 @@ router.get('/', async (req, res) => {
 // POST /leads - Create a new lead
 router.post('/', async (req, res) => {
   try {
-    console.log("Incoming lead:", req.body);
+    console.log("Incoming lead payload:", req.body);
 
     const {
       name,
+      phone,
       email,
-      mobile,
-      company,
+      source,
+      status,
+      value,
+      companyName,
       designation,
       budgetRange,
-      preferredContact,
+      preferredContactMethod,
       serviceInterest,
-      description,
-      source,
-      status
+      description
     } = req.body;
 
-    // Validation
-    if (!name || !email) {
-      return res.status(400).json({
-        success: false,
-        error: "Name and email are required"
-      });
-    }
-
-    // Create lead
     const record = await pb.collection('leads').create({
       name,
+      mobile: phone,
       email,
-      mobile,
-      company,
-      designation,
-      budgetRange,
-      preferredContact,
-      serviceInterest,
-      description,
-      source: source || "website_contact_form",
-      status: status || "new"
-    }, {
-      $autoCancel: false
+      source: source || 'website_contact_form',
+      status: status || 'new',
+      value: value || 0,
+      companyName: companyName || '',
+      designation: designation || '',
+      budgetRange: budgetRange || '',
+      preferredContactMethod: preferredContactMethod || '',
+      serviceInterest: serviceInterest || '',
+      description: description || ''
     });
 
-    // IMPORTANT
+    console.log("Lead created successfully:", record);
+
     return res.status(201).json({
       success: true,
-      data: record
+      lead: record
     });
 
   } catch (error) {
-    console.error("Lead creation error:", error);
+    console.error("Lead creation failed:", error);
 
     return res.status(500).json({
       success: false,
-      error: error.message || "Failed to create lead"
+      error: error.message
     });
   }
 });
