@@ -36,19 +36,18 @@ router.post('/', async (req, res) => {
       serviceInterest,
       description,
       source,
-      status,
-      stage
+      status
     } = req.body;
 
     // Validation
     if (!name || !email) {
       return res.status(400).json({
         success: false,
-        error: 'Name and email are required'
+        error: "Name and email are required"
       });
     }
 
-    // Create lead in PocketBase
+    // Create lead
     const record = await pb.collection('leads').create({
       name,
       email,
@@ -59,25 +58,24 @@ router.post('/', async (req, res) => {
       preferredContact,
       serviceInterest,
       description,
-
-      source: source || 'website_contact_form',
-      status: status || 'new',
-      stage: stage || 'incoming'
+      source: source || "website_contact_form",
+      status: status || "new"
     }, {
       $autoCancel: false
     });
 
+    // IMPORTANT
     return res.status(201).json({
       success: true,
       data: record
     });
 
   } catch (error) {
-    console.error('Lead creation error:', error);
+    console.error("Lead creation error:", error);
 
     return res.status(500).json({
       success: false,
-      error: error.message || 'Failed to create lead'
+      error: error.message || "Failed to create lead"
     });
   }
 });

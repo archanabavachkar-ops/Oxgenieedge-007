@@ -23,6 +23,7 @@ const pb = new PocketBase(
 );
 
 const app = express();
+app.use(express.json());
 // Railway / Reverse Proxy Support
 app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3001;
