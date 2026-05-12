@@ -1,6 +1,7 @@
 
 import dotenv from 'dotenv';
 dotenv.config();
+console.log('===== NEW MAIN.JS LOADED =====');
 
 import express from 'express';
 import cors from 'cors';
