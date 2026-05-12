@@ -131,8 +131,8 @@ export default function ContactPage() {
                 <div>
                   <h3 className="text-lg font-semibold text-foreground">Email us</h3>
                   <p className="text-muted-foreground mt-1">Our friendly team is here to help.</p>
-                  <a href="mailto:hello@example.com" className="text-primary font-medium hover:underline mt-2 inline-block">
-                    hello@example.com
+                  <a href="mailto:hello@oxgenieedge.com" className="text-primary font-medium hover:underline mt-2 inline-block">
+                    hello@oxgenieedge.com
                   </a>
                 </div>
               </div>
@@ -145,8 +145,9 @@ export default function ContactPage() {
                   <h3 className="text-lg font-semibold text-foreground">Visit us</h3>
                   <p className="text-muted-foreground mt-1">Come say hello at our office HQ.</p>
                   <p className="text-foreground font-medium mt-2">
-                    100 Smith Street<br />
-                    Collingwood VIC 3066 AU
+                    JP Homes Row Hse 13<br />
+                    Manjri Budruk
+                    Pune, Maharashtra 412307
                   </p>
                 </div>
               </div>
@@ -158,8 +159,8 @@ export default function ContactPage() {
                 <div>
                   <h3 className="text-lg font-semibold text-foreground">Call us</h3>
                   <p className="text-muted-foreground mt-1">Mon-Fri from 8am to 5pm.</p>
-                  <a href="tel:+15550000000" className="text-primary font-medium hover:underline mt-2 inline-block">
-                    +1 (555) 000-0000
+                  <a href="tel:+919422008201" className="text-primary font-medium hover:underline mt-2 inline-block">
+                    +91 9422008201
                   </a>
                 </div>
               </div>
