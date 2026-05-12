@@ -124,6 +124,94 @@ migrate((app) => {
           },
           {
                 "hidden": false,
+                "id": "text_company001",
+                "name": "company",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text",
+                "autogeneratePattern": "",
+                "max": 0,
+                "min": 0,
+                "pattern": ""
+          },
+          {
+                "hidden": false,
+                "id": "text_designation001",
+                "name": "designation",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text",
+                "autogeneratePattern": "",
+                "max": 0,
+                "min": 0,
+                "pattern": ""
+          },
+          {
+                "hidden": false,
+                "id": "text_budget001",
+                "name": "budgetRange",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                 "type": "text",
+                 "autogeneratePattern": "",
+                 "max": 0,
+                 "min": 0,
+                 "pattern": ""
+          },
+          {
+                "hidden": false,
+                "id": "text_preferred001",
+                "name": "preferredContact",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text",
+                "autogeneratePattern": "",
+                "max": 0,
+                "min": 0,
+                "pattern": ""
+          },
+          {
+                "hidden": false,
+                "id": "text_source001",
+                "name": "source",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text",
+                "autogeneratePattern": "",
+                "max": 0,
+                "min": 0,
+                "pattern": ""
+          },
+          {
+                "hidden": false,
+                "id": "select_status001",
+                "maxSelect": 1,
+                "name": "status",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "select",
+                 "values": [
+                 "new",
+                 "contacted",
+                 "qualified",
+                 "proposal",
+                 "won",
+                 "lost"
+            ]
+          },
+          {
+                "hidden": false,
                 "id": "autodate6927872142",
                 "name": "updated",
                 "onCreate": true,
@@ -131,7 +219,7 @@ migrate((app) => {
                 "presentable": false,
                 "system": false,
                 "type": "autodate"
-          }
+            }
     ],
     "id": "pbc_9397138959",
     "indexes": [],

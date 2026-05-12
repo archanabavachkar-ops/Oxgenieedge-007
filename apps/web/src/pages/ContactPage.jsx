@@ -41,21 +41,25 @@ export default function ContactPage() {
     setIsSubmitting(true);
 
     try {
-      // (2) Create JSON payload with all fields
+      // (2) Create JSOconst payload = {
       const payload = {
         name: formData.name,
         email: formData.email,
-        phone: formData.phone,
+        mobile: formData.phone,
         company: formData.company,
         designation: formData.designation,
         budgetRange: formData.budgetRange,
         preferredContact: formData.preferredContact,
-        subject: formData.subject,
-        message: formData.message,
+        serviceInterest: formData.subject,
+        description: formData.message,
+
+        source: "website_contact_form",
+        status: "new",
+        stage: "incoming"
       };
 
       // (3) Call apiServerClient.fetch
-      const response = await fetch('/api/contacts', {
+      const response = await fetch('/api/leads', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -251,7 +255,7 @@ export default function ContactPage() {
                   <option value="under_25000">Under ₹25,000</option>
                   <option value="25000_50000">₹25,000 - ₹50,000</option>
                   <option value="50000_100000">₹50,000 - ₹1,00,000</option>
-                  <option value="100000_plus">₹1,,000+</option>
+                  <option value="100000_plus">₹1,00,000+</option>
                 </select>
               </div>
 
