@@ -82,7 +82,24 @@ export class LeadService {
       throw error;
     }
   }
+  static async getAllLeads() {
+    try {
 
+      const leads = await pb.collection('leads').getFullList({
+        sort: '-created'
+      });
+
+      return leads;
+
+    } catch (error) {
+
+      logger.error('Failed to fetch leads', {
+        error: error.message
+      });
+
+      throw error;
+    }
+  }
   static async assignLead(leadId) {
     return AssignmentService.autoAssign(leadId);
   }
