@@ -8,10 +8,10 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import { contactLimiter, integrationLimiter, whatsappLimiter } from './middleware/rateLimiter.js';
 
-import routes from './routes/index.js';
-import contactsRouter from './routes/integrations/contacts.js';
-import facebookRouter from './routes/integrations/facebook.js';
-import whatsappRouter from './routes/integrations/whatsapp.js';
+// import routes from './routes/index.js';
+// import contactsRouter from './routes/integrations/contacts.js';
+// import facebookRouter from './routes/integrations/facebook.js';
+// import whatsappRouter from './routes/integrations/whatsapp.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import logger from '../utils/logger.js';
 
@@ -62,15 +62,20 @@ app.use('/api/integrations', integrationLimiter);
 app.use('/api/integrations/whatsapp', whatsappLimiter);
 
 // Mount routes at /hcgi/api to match frontend's apiServerClient base URL
-app.use('/hcgi/api', routes());
+// app.use('/hcgi/api', routes());
 
 // Also mount at /api for backward compatibility
-app.use('/api', routes());
+app.get('/api/leads', (req, res) => {
+  res.json({
+    success: true,
+    message: 'API working'
+  });
+});
 
 // Mount integration routers with rate limiters applied
-app.use('/api/integrations', contactsRouter);
-app.use('/api/integrations/facebook', facebookRouter);
-app.use('/api/integrations/whatsapp', whatsappRouter);
+// app.use('/api/integrations', contactsRouter);
+// app.use('/api/integrations/facebook', facebookRouter);
+// app.use('/api/integrations/whatsapp', whatsappRouter);
 
 // 404 Catch-All (AFTER routes)
 app.use((req, res, next) => {
