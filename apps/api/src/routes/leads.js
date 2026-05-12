@@ -22,24 +22,64 @@ router.get('/', async (req, res) => {
 
 // POST /leads - Create a new lead
 router.post('/', async (req, res) => {
-  const { name, phone, email, source, status, value } = req.body;
-  
-  if (!name || !phone || !source || !status) {
-    return res.status(400).json({ 
-      error: 'Missing required fields: name, phone, source, status' 
+  try {
+    console.log("Incoming lead:", req.body);
+
+    const {
+      name,
+      email,
+      mobile,
+      company,
+      designation,
+      budgetRange,
+      preferredContact,
+      serviceInterest,
+      description,
+      source,
+      status,
+      stage
+    } = req.body;
+
+    // Validation
+    if (!name || !email) {
+      return res.status(400).json({
+        success: false,
+        error: 'Name and email are required'
+      });
+    }
+
+    // Create lead in PocketBase
+    const record = await pb.collection('leads').create({
+      name,
+      email,
+      mobile,
+      company,
+      designation,
+      budgetRange,
+      preferredContact,
+      serviceInterest,
+      description,
+
+      source: source || 'website_contact_form',
+      status: status || 'new',
+      stage: stage || 'incoming'
+    }, {
+      $autoCancel: false
+    });
+
+    return res.status(201).json({
+      success: true,
+      data: record
+    });
+
+  } catch (error) {
+    console.error('Lead creation error:', error);
+
+    return res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to create lead'
     });
   }
-  
-  const record = await pb.collection('leads').create({
-    name,
-    phone,
-    email,
-    source,
-    status,
-    value
-  }, { $autoCancel: false });
-  
-  res.status(201).json(record);
 });
 
 // GET /leads/:id - Fetch a single lead
