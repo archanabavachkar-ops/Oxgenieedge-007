@@ -1,7 +1,6 @@
 import Pocketbase from 'pocketbase';
 
-const POCKETBASE_API_URL =
-  'https://web-production-d6416a.up.railway.app';
+const POCKETBASE_API_URL = "/hcgi/platform";
 
 const pocketbaseClient = new Pocketbase(POCKETBASE_API_URL);
 

@@ -1,4 +1,5 @@
 
+import { exportLeadsToCSV, updateLeadStatus, deleteLead } from '@/api/adminApi';
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Search, Download, Plus, MoreHorizontal, UserPlus, 
@@ -20,10 +21,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 
-import pb from '@/lib/pocketbaseClient';
 import LeadDetailsModal from '@/components/LeadDetailsModal';
 import BulkAssignModal from '@/components/BulkAssignModal';
 import DeleteConfirmationDialog from '@/components/DeleteConfirmationDialog';
+import { toast } from 'sonner';
 
 const LeadsManagement = () => {
   const [leads, setLeads] = useState([]);
@@ -60,15 +61,19 @@ const LeadsManagement = () => {
   const loadLeads = useCallback(async () => {
     setIsLoading(true);
     try {
-      const records = await pb.collection('leads').getFullList({
-        sort: '-created'
-      });
-      
-      console.log('PocketBase Leads:', records);
+      const response = await fetch(
+        'https://amusing-happiness-production-81e3.up.railway.app/api/leads'
+      );
 
-      setLeads(records);
-      setTotal(records.length);
-      setPages(1);
+      const result = await response.json();
+
+      console.log('API Leads:', result);
+
+      if (result.success) {
+        setLeads(result.data || []);
+        setTotal(result.data.length || 0);
+        setPages(1);
+      } 
     } catch (error) {
       toast.error('Failed to load leads');
     } finally {
