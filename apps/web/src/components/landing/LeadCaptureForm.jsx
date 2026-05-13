@@ -39,12 +39,14 @@ export default function LeadCaptureForm({ source = 'home', buttonText = "Get Sta
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        name: formData.name.trim(),
-        email: formData.email.trim().toLowerCase(),
-        mobile: formData.mobile.trim(),
-        source: source
-      })
+    body: JSON.stringify({
+      name: formData.name.trim(),
+      email: formData.email.trim().toLowerCase(),
+      mobile: formData.mobile.trim(),
+      source: source,
+      priority: 'Medium',
+      status: 'new'
+    })
     }
   );
 
