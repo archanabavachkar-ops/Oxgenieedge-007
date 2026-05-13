@@ -81,9 +81,37 @@ const CrmDashboardPage = () => {
                       </td>
                       <td className="p-4 text-sm text-gray-600">{lead.serviceInterest || '-'}</td>
                       <td className="p-4">
-                        <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium capitalize">
-                          {lead.status || 'new'}
-                        </span>
+                          <select
+                            value={lead.status || 'new'}
+                            onChange={async (e) => {
+                              const newStatus = e.target.value;
+
+                              try {
+                                await pb.collection('leads').update(lead.id, {
+                                  status: newStatus
+                                });
+
+                                setLeads(prev =>
+                                  prev.map(l =>
+                                    l.id === lead.id
+                                      ? { ...l, status: newStatus }
+                                      : l
+                                  )
+                                );
+                              } catch (err) {
+                                console.error(err);
+                                alert('Failed to update status');
+                              }
+                            }}
+                            className="px-2 py-1 border rounded-lg text-xs"
+                          >
+                            <option value="new">New</option>
+                            <option value="contacted">Contacted</option>
+                            <option value="qualified">Qualified</option>
+                            <option value="proposal_sent">Proposal Sent</option>
+                            <option value="won">Won</option>
+                            <option value="lost">Lost</option>
+                          </select>
                       </td>
                       <td className="p-4 text-sm text-gray-500">{new Date(lead.created).toLocaleDateString()}</td>
                     </tr>
