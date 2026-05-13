@@ -20,7 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 
-import { fetchLeadsWithFilters, exportLeadsToCSV, updateLeadStatus, deleteLead } from '@/api/adminApi';
+import pb from '@/lib/pocketbaseClient';
 import LeadDetailsModal from '@/components/LeadDetailsModal';
 import BulkAssignModal from '@/components/BulkAssignModal';
 import DeleteConfirmationDialog from '@/components/DeleteConfirmationDialog';
@@ -60,14 +60,15 @@ const LeadsManagement = () => {
   const loadLeads = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await fetchLeadsWithFilters(page, limit, {
-        search: debouncedSearch,
-        source: sourceFilter,
-        status: statusFilter
+      const records = await pb.collection('leads').getFullList({
+        sort: '-created'
       });
-      setLeads(data.leads);
-      setTotal(data.total);
-      setPages(data.pages);
+      
+      console.log('PocketBase Leads:', records);
+
+      setLeads(records);
+      setTotal(records.length);
+      setPages(1);
     } catch (error) {
       toast.error('Failed to load leads');
     } finally {
