@@ -78,8 +78,12 @@ export class LeadService {
       
       return createdLead;
     } catch (error) {
-      logger.error('Failed to create lead', { error: error.message });
-      throw error;
+
+      console.error('GET LEADS ERROR:', error);
+
+      return [{
+        error: error.message
+      }];
     }
   }
   static async getAllLeads() {
