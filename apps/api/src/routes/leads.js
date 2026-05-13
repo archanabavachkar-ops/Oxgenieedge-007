@@ -1,22 +1,29 @@
 import express from 'express';
-import { LeadService } from '../services/LeadService.js';
+import pb from '../utils/pocketbaseClient.js';
 
 const router = express.Router();
 
-// GET all leads
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res) => {
+
   try {
 
-    const leads = await LeadService.getAllLeads();
+    const data = await pb.collection('leads').getFullList();
 
     res.json({
       success: true,
-      data: leads
+      data
     });
 
   } catch (error) {
-    next(error);
+
+    res.json({
+      success: false,
+      message: error.message,
+      full: error
+    });
+
   }
+
 });
 
 export default router;
