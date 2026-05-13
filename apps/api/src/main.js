@@ -9,7 +9,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import { contactLimiter, integrationLimiter, whatsappLimiter } from './middleware/rateLimiter.js';
 
-// import routes from './routes/index.js';
+import routes from './routes/index.js';
 // import contactsRouter from './routes/integrations/contacts.js';
 // import facebookRouter from './routes/integrations/facebook.js';
 // import whatsappRouter from './routes/integrations/whatsapp.js';
@@ -66,12 +66,7 @@ app.use('/api/integrations/whatsapp', whatsappLimiter);
 // app.use('/hcgi/api', routes());
 
 // Also mount at /api for backward compatibility
-app.get('/api/leads', (req, res) => {
-  res.json({
-    success: true,
-    message: 'API working'
-  });
-});
+app.use('/api', routes());
 
 // Mount integration routers with rate limiters applied
 // app.use('/api/integrations', contactsRouter);
