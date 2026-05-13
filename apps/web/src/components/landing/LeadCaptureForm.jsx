@@ -32,14 +32,27 @@ export default function LeadCaptureForm({ source = 'home', buttonText = "Get Sta
     setIsLoading(true);
     try {
       // Map to exact collection schema
-      await pb.collection('leads').create({
+  const response = await fetch(
+    'https://amusing-happiness-production-81e3.up.railway.app/api/leads',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
         name: formData.name.trim(),
         email: formData.email.trim().toLowerCase(),
-        mobile: formData.mobile.trim(), // Optional based on recent schema update
-        priority: 'Medium', // Required by schema, setting a default
-        status: 'new', // Required by schema, updated enum
-        source: source // Required by schema
-      }, { $autoCancel: false });
+        mobile: formData.mobile.trim(),
+        source: source
+      })
+    }
+  );
+
+  const result = await response.json();
+
+  if (!result.success) {
+    throw new Error(result.message || 'Failed to create lead');
+  }
       
       toast.success('Check your email for next steps!');
       
