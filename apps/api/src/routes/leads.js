@@ -2,13 +2,14 @@ import express from 'express';
 
 const router = express.Router();
 
+// GET all leads
 router.get('/', async (req, res) => {
-  console.log('LEADS ROUTE HIT');
 
   res.json({
     success: true,
-    message: 'Leads route working'
+    data: []
   });
+
 });
 
 export default router;
