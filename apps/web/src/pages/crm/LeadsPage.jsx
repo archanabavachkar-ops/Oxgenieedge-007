@@ -67,27 +67,20 @@ export default function LeadsPage() {
       agentsList.forEach(a => map[a.id] = a);
       setAgentsMap(map);
 
-      let records = [];
-      if (isAdmin) {
-        records = await pb.collection('leads').getFullList({
-          sort: '-created',
-          $autoCancel: false
-        });
+      const response = await fetch(
+        'https://amusing-happiness-production-81e3.up.railway.app/api/leads'
+      );
+
+      const result = await response.json();
+
+      console.log('API Leads Response:', result);
+
+      if (result.success) {
+        setLeads(result.data || []);
       } else {
-        const result = await pb.collection('leads').getList(1, 500, {
-          filter: `assignedTo="${currentAdmin?.id}"`,
-          sort: '-created',
-          $autoCancel: false
-        });
-        records = result.items;
+        console.error('Failed to fetch leads');
+        setLeads([]);
       }
-      
-      console.log('[LeadsPage] Fetched leads from database:', records.length, 'records found.');
-      if (records.length > 0) {
-        console.log('[LeadsPage] Sample lead data:', records[0]);
-      }
-      
-      setLeads(records);
     } catch (err) {
       console.error('[LeadsPage] Error fetching leads data:', err);
       setError('Failed to load leads data.');
