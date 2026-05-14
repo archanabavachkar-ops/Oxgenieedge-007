@@ -57,4 +57,31 @@ router.get('/', async (req, res) => {
 
 });
 
+router.put('/:id', async (req, res) => {
+
+  try {
+
+    const updatedLead = await pb.collection('leads').update(
+      req.params.id,
+      req.body
+    );
+
+    res.json({
+      success: true,
+      data: updatedLead
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+
+  }
+
+});
+
 export default router;

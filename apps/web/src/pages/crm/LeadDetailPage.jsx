@@ -129,7 +129,18 @@ const LeadDetailPage = () => {
     setActionLoading(true);
     try {
       // 1. Update lead status
-      await pb.collection('leads').update(lead.id, { status: newStage }, { $autoCancel: false });
+      await fetch(
+        `https://amusing-happiness-production-81e3.up.railway.app/api/leads/${lead.id}`,
+         {
+        method: 'PUT',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          status: newStage
+        })
+      }
+    );
       
       // 2. Log activity
       await pb.collection('activities').create({

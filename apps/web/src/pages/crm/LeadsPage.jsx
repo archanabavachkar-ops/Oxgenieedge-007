@@ -73,7 +73,7 @@ export default function LeadsPage() {
 
       const result = await response.json();
 
-      console.log('API Leads Response:', result);
+      console.log('API Leads Response:', result.data);
 
       if (result.success) {
         setLeads(result.data || []);
