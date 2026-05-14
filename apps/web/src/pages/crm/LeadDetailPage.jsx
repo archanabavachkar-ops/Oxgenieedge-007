@@ -229,6 +229,14 @@ const LeadDetailPage = () => {
                   <p className="text-xs text-muted-foreground mb-1">Created</p>
                   <p className="text-sm font-medium text-foreground">{new Date(lead.created).toLocaleDateString()}</p>
                 </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Next Follow-Up Date</p>
+
+                  <p className="text-sm font-medium text-foreground">{lead.nextFollowUpDate
+                  ? new Date(lead.nextFollowUpDate).toLocaleDateString()
+                  : 'Not Scheduled'}
+                </p>
+                </div>
               </div>
             </CardContent>
           </Card>
