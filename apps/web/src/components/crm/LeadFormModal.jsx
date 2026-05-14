@@ -178,7 +178,9 @@ export default function LeadFormModal({ isOpen, onClose, lead, onSuccess }) {
                 </SelectTrigger>
                 <SelectContent>
                   {STATUS_OPTIONS.map(st => (
-                    <SelectItem key={st} value={st}>{st}</SelectItem>
+                    <SelectItem key={st.value} value={st.value}>
+                      {st.label}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
