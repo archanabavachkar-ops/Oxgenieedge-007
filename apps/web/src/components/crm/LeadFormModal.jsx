@@ -74,17 +74,35 @@ export default function LeadFormModal({ isOpen, onClose, lead, onSuccess }) {
     setIsSubmitting(true);
     try {
       if (lead?.id) {
-        await pb.collection('leads').update(lead.id, formData, { $autoCancel: false });
+        await fetch(
+          `https://amusing-happiness-production-81e3.up.railway.app/api/leads/${lead.id}`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        }
+      );
         toast.success('Lead updated successfully');
       } else {
         // Handle nextFollowUpDate as required by schema (set to tomorrow)
         const nextFollowUp = new Date();
         nextFollowUp.setDate(nextFollowUp.getDate() + 1);
         
-        await pb.collection('leads').create({
-          ...formData,
-          nextFollowUpDate: nextFollowUp.toISOString(),
-        }, { $autoCancel: false });
+        await fetch(
+          'https://amusing-happiness-production-81e3.up.railway.app/api/leads',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              ...formData,
+              nextFollowUpDate: nextFollowUp.toISOString(),
+            })
+          }
+        );
         toast.success('Lead created successfully');
       }
       
