@@ -180,9 +180,11 @@ const LeadDetailPage = () => {
               <SelectValue placeholder="Update Stage" />
             </SelectTrigger>
             <SelectContent>
-              {STAGES.map(s => (
-                <SelectItem key={s} value={s}>{s}</SelectItem>
-              ))}
+              <SelectItem value="new">New</SelectItem>
+                <SelectItem value="contacted">Contacted</SelectItem>
+                <SelectItem value="qualified">Qualified</SelectItem>
+                <SelectItem value="converted">Converted</SelectItem>
+                <SelectItem value="lost">Lost</SelectItem>
             </SelectContent>
           </Select>
         </div>
