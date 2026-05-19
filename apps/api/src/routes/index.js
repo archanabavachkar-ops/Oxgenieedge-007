@@ -3,6 +3,7 @@ import healthCheck from './health-check.js';
 import integratedAiRouter from './integrated-ai.js';
 import leadsRouter from './leads.js';
 import whatsappRouter from './integrations/whatsapp.js';
+import crmUsersRouter from './crm-users.js';
 
 export default function routes() {
   const router = Router();
@@ -18,6 +19,8 @@ export default function routes() {
 
   // WhatsApp integration
   router.use('/integrations/whatsapp', whatsappRouter);
+
+  router.use('/crm-users', crmUsersRouter);
 
   return router;
 }
