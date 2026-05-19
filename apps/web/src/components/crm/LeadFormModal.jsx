@@ -15,11 +15,14 @@ import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 
 const SOURCE_OPTIONS = ['Website', 'Phone Call', 'Email', 'Referral', 'Social Media', 'Trade Show', 'Other'];
-const STATUS_OPTIONS = [{ value: 'new', label: 'New Lead' },
-  { value: 'contacted', label: 'Contacted' },
-  { value: 'qualified', label: 'Qualified' },
-  { value: 'converted', label: 'Converted' },
-  { value: 'lost', label: 'Lost' }];
+const STATUS_OPTIONS = [
+  { value: 'New Lead', label: 'New Lead' },
+  { value: 'Attempted Contact', label: 'Attempted Contact' },
+  { value: 'Connected', label: 'Connected' },
+  { value: 'Qualified', label: 'Qualified' },
+  { value: 'Won', label: 'Won' },
+  { value: 'Lost', label: 'Lost' }
+];
 const PRIORITY_OPTIONS = ['Hot', 'Medium', 'Cold'];
 
 export default function LeadFormModal({ isOpen, onClose, lead, onSuccess }) {
@@ -29,7 +32,7 @@ export default function LeadFormModal({ isOpen, onClose, lead, onSuccess }) {
     email: '',
     mobile: '',
     company: '',
-    status: 'new',
+    status: 'New Lead',
     priority: 'Medium',
     source: 'Website',
   });
@@ -41,7 +44,7 @@ export default function LeadFormModal({ isOpen, onClose, lead, onSuccess }) {
         email: lead.email || '',
         mobile: lead.mobile || '',
         company: lead.company || '',
-        status: lead.status || 'new',
+        status: lead.status || 'New Lead',
         priority: lead.priority || 'Medium',
         source: lead.source || 'Website',
       });
@@ -51,7 +54,7 @@ export default function LeadFormModal({ isOpen, onClose, lead, onSuccess }) {
         email: '',
         mobile: '',
         company: '',
-        status: 'new',
+        status: 'New Lead',
         priority: 'Medium',
         source: 'Website',
       });
