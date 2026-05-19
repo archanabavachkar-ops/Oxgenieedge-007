@@ -12,7 +12,6 @@ import { Input } from '@/components/ui/input.jsx';
 import { Label } from '@/components/ui/label.jsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.jsx';
 import { toast } from 'sonner';
-import pb from '@/lib/pocketbaseClient.js';
 import { Loader2 } from 'lucide-react';
 
 const SOURCE_OPTIONS = ['Website', 'Phone Call', 'Email', 'Referral', 'Social Media', 'Trade Show', 'Other'];
