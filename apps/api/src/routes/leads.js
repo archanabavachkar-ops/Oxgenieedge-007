@@ -63,7 +63,14 @@ router.put('/:id', async (req, res) => {
 
     const updatedLead = await pb.collection('leads').update(
       req.params.id,
-      req.body
+      {
+        name: req.body.name,
+        email: req.body.email,
+        mobile: req.body.mobile,
+        source: req.body.source,
+        priority: req.body.priority,
+        status: req.body.status
+      }
     );
 
     res.json({
@@ -73,11 +80,12 @@ router.put('/:id', async (req, res) => {
 
   } catch (error) {
 
-    console.error(error);
+    console.error('UPDATE ERROR:', error);
 
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
+      full: error
     });
 
   }
