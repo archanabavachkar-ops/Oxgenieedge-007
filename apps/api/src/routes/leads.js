@@ -11,9 +11,13 @@ router.post('/', async (req, res) => {
       name: req.body.name,
       email: req.body.email,
       mobile: req.body.mobile,
-      source: req.body.source,
-      priority: req.body.priority,
-      status: req.body.status
+
+      serviceInterest: req.body.serviceInterest || '',
+      description: req.body.description || '',
+
+      source: 'Website',
+      priority: 'Warm',
+      status: 'New Lead'
     });
 
     res.json({
