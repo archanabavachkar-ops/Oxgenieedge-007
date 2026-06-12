@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from '@/hooks/use-toast';
 import { integratedAiClient } from '@/lib/integratedAiClient';
-import { pocketbaseClient } from '@/lib/pocketbaseClient';
+import  pocketbaseClient  from '@/lib/pocketbaseClient';
 
 /**
  * @typedef {object} TextContentBlock

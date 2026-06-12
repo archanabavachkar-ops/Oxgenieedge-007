@@ -35,57 +35,39 @@ router.post('/', async (req, res) => {
 
 });
 
-router.get('/', async (req, res) => {
+router.post('/', async (req, res) => {
 
   try {
 
-    const data = await pb.collection('leads').getFullList();
+    const lead = await pb.collection('leads').create({
+
+      name: req.body.name,
+      email: req.body.email,
+      mobile: req.body.mobile,
+
+      serviceInterest: req.body.serviceInterest || '',
+      description: req.body.description || '',
+
+      source: 'Website',
+      priority: 'Warm',
+      status: 'New Lead'
+
+    });
 
     res.json({
       success: true,
-      data
+      data: lead
     });
 
   } catch (error) {
 
-    res.json({
-      success: false,
-      message: error.message
-    });
-
-  }
-
-});
-
-router.put('/:id', async (req, res) => {
-
-  try {
-
-    const updatedLead = await pb.collection('leads').update(
-      req.params.id,
-      {
-        name: req.body.name,
-        email: req.body.email,
-        mobile: req.body.mobile,
-        source: req.body.source,
-        priority: req.body.priority,
-        status: req.body.status
-      }
+    console.error(
+      JSON.stringify(error.response, null, 2)
     );
-
-    res.json({
-      success: true,
-      data: updatedLead
-    });
-
-  } catch (error) {
-
-    console.error('UPDATE ERROR:', error);
 
     res.status(500).json({
       success: false,
-      message: error.message,
-      full: error
+      error: error.response || error.message
     });
 
   }

@@ -63,7 +63,7 @@ const CrmUserManagementPage = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const records = await pb.collection('admin_users').getFullList({
+      const records = await pb.collection('crm_users').getFullList({
         sort: '-created',
         $autoCancel: false
       });
@@ -88,7 +88,7 @@ const CrmUserManagementPage = () => {
     
     const subscribe = async () => {
       try {
-        await pb.collection('admin_users').subscribe('*', (e) => {
+        await pb.collection('crm_users').subscribe('*', (e) => {
           if (isSubscribed && (e.action === 'create' || e.action === 'update' || e.action === 'delete')) {
             fetchUsers();
           }
@@ -101,7 +101,7 @@ const CrmUserManagementPage = () => {
     
     return () => {
       isSubscribed = false;
-      pb.collection('admin_users').unsubscribe('*').catch(console.warn);
+      pb.collection('crm_users').unsubscribe('*').catch(console.warn);
     };
   }, []);
 
@@ -184,7 +184,7 @@ const CrmUserManagementPage = () => {
   const handleBulkDelete = async () => {
     setBulkLoading(true);
     try {
-      const promises = selectedUserIds.map(id => pb.collection('admin_users').delete(id, { $autoCancel: false }));
+      const promises = selectedUserIds.map(id => pb.collection('crm_users').delete(id, { $autoCancel: false }));
       await Promise.all(promises);
       toast.success(`${selectedUserIds.length} users deleted successfully`);
       setSelectedUserIds([]);
@@ -202,7 +202,7 @@ const CrmUserManagementPage = () => {
     setBulkLoading(true);
     try {
       const promises = selectedUserIds.map(id => {
-        return pb.collection('admin_users').update(id, { status: newStatus }, { $autoCancel: false });
+        return pb.collection('crm_users').update(id, { status: newStatus }, { $autoCancel: false });
       });
       await Promise.all(promises);
       toast.success(`${selectedUserIds.length} users updated successfully`);
@@ -298,8 +298,8 @@ const CrmUserManagementPage = () => {
 
           <div className="flex gap-2 w-full sm:w-auto">
             <ExportMenu 
-              onExportCSV={() => exportToCSV(getExportData(), 'admin_users')}
-              onExportExcel={() => exportToExcel(getExportData(), 'admin_users')}
+              onExportCSV={() => exportToCSV(getExportData(), 'crm_users')}
+              onExportExcel={() => exportToExcel(getExportData(), 'crm_users')}
               totalCount={users.length}
               filteredCount={filteredAndSortedUsers.length}
               selectedCount={selectedUserIds.length}

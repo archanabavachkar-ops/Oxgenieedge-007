@@ -109,11 +109,22 @@ const loginAdmin = async (email, password) => {
     setIsLoading(true);
 
     // Authenticate using PocketBase users collection
-const authData = await pb.collection('users').authWithPassword(
+  console.log("Email:", email);
+  console.log("Password:", password);
+
+  console.log("LOGIN DEBUG:", {
   email,
   password,
+  baseUrl: pb.baseURL,
+});
+
+const authData = await pb.collection('users').authWithPassword(
+  email.trim(),
+  password.trim(),
   { $autoCancel: false }
 );
+
+console.log("LOGIN SUCCESS:", authData);
 
 console.log(`[AuthContext] Admin login successful for: ${email}`);
 

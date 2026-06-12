@@ -67,20 +67,12 @@ export default function LeadsPage() {
       agentsList.forEach(a => map[a.id] = a);
       setAgentsMap(map);
 
-      const response = await fetch(
-        'https://amusing-happiness-production-81e3.up.railway.app/api/leads'
-      );
+      const records = await pb.collection('leads').getFullList({
+        sort: '-created',
+        $autoCancel: false,
+      });
 
-      const result = await response.json();
-
-      console.log('API Leads Response:', result.data);
-
-      if (result.success) {
-        setLeads(result.data || []);
-      } else {
-        console.error('Failed to fetch leads');
-        setLeads([]);
-      }
+      setLeads(records);
     } catch (err) {
       console.error('[LeadsPage] Error fetching leads data:', err);
       setError('Failed to load leads data.');
