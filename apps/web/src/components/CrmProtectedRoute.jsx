@@ -25,21 +25,51 @@ const CrmProtectedRoute = ({ children, allowedRoles = ['admin', 'ceo', 'sales ma
   }
 
   // 1. Verify Admin Authentication Status
-  if (!isAdminLoggedIn || !currentAdmin) {
-    console.warn('[CrmProtectedRoute] Unauthorized access attempt. Redirecting to /admin/login');
-    return <Navigate to="/admin/login" state={{ from: location }} replace />;
-  }
+  const storedAdmin =
+    JSON.parse(localStorage.getItem('adminUser'));
 
-  // 2. Verify Role Authorization
-  const userRole = currentAdmin.role?.toLowerCase() || 'viewer';
-  const allowedRolesLower = allowedRoles.map(r => r.toLowerCase());
+const admin =
+    currentAdmin || storedAdmin;
 
-  if (!allowedRolesLower.includes(userRole)) {
-    console.warn(`[CrmProtectedRoute] Forbidden role: ${userRole}. Allowed roles:`, allowedRolesLower);
-    return <Navigate to="/admin/dashboard" replace />;
-  }
+if (
+    !isAdminLoggedIn &&
+    !currentAdmin &&
+    !storedAdmin
+) {
+    console.log(
+        '[CrmProtectedRoute] Unauthorized access attempt.'
+    );
 
-  return children;
+    return (
+        <Navigate
+            to="/admin/login"
+            replace
+        />
+    );
+}
+
+const userRole =
+    admin?.role?.toLowerCase() || 'viewer';
+
+const allowedRolesLower =
+    allowedRoles.map(r => r.toLowerCase());
+
+if (
+    !allowedRolesLower.includes(userRole)
+) {
+    console.warn(
+        `[CrmProtectedRoute] Forbidden role: ${userRole}`
+    );
+
+    return (
+        <Navigate
+            to="/admin/crm/dashboard"
+            replace
+        />
+    );
+}
+
+return children;
 };
 
 export default CrmProtectedRoute;

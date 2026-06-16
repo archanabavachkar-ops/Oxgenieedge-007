@@ -15,20 +15,21 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  // Admin Auth State (Custom collection: admin_users)
+  // Admin Auth State (crmUsersAuth collection)
   const [currentAdmin, setCurrentAdmin] = useState(null);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 
   // Public User Auth State (Default auth collection: users)
-  const [currentUser, setCurrentUser] = useState(pb.authStore.model);
-  const [isAuthenticated, setIsAuthenticated] = useState(pb.authStore.isValid);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] =
+  useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     // 1. Initialize default admin user if it doesn't exist
-    initializeAdminUser();
+    // initializeAdminUser();
 
     // 2. Check Admin Session
     try {
@@ -46,15 +47,18 @@ export const AuthProvider = ({ children }) => {
     }
 
     // 3. Check Public Session
-    setCurrentUser(pb.authStore.model);
+    setCurrentUser(pb.authStore.record);
     setIsAuthenticated(pb.authStore.isValid);
 
     setIsLoading(false);
 
     // 4. Listen to public authStore changes
-    const unsubscribe = pb.authStore.onChange((token, model) => {
-      setCurrentUser(model);
-      setIsAuthenticated(!!model);
+    const unsubscribe = pb.authStore.onChange(() => {
+
+      setCurrentUser(pb.authStore.record);
+
+      setIsAuthenticated(pb.authStore.isValid);
+
     });
 
     return () => unsubscribe();
@@ -64,7 +68,14 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     console.log(`[AuthContext] Public user login attempt for: ${email}`);
     try {
-      const authData = await pb.collection('users').authWithPassword(email, password, { $autoCancel: false });
+      pb.authStore.clear();
+
+    const authData =
+      await pb.collection('users')
+      .authWithPassword(
+      email.trim(),
+      password.trim()
+    );
       console.log(`[AuthContext] Public user login successful:`, authData);
       setCurrentUser(authData.record);
       setIsAuthenticated(true);
@@ -86,7 +97,7 @@ export const AuthProvider = ({ children }) => {
 
   const googleLogin = async () => {
     try {
-      const authData = await pb.collection('users').authWithOAuth2({ provider: 'google', $autoCancel: false });
+      const authData = await pb.collection('users').authWithOAuth2({ provider: 'google'});
       console.log(`[AuthContext] Google login successful:`, authData);
       setCurrentUser(authData.record);
       setIsAuthenticated(true);
@@ -98,78 +109,121 @@ export const AuthProvider = ({ children }) => {
   };
 
   // --- Admin User Methods ---
-const loginAdmin = async (email, password) => {
-  console.log(`[AuthContext] Admin login attempt for: ${email}`);
+  const loginAdmin = async (email, password) => {
 
-  if (!pb) {
-    throw new Error('Database connection error');
-  }
+  console.log(
+    `[AuthContext] Admin login attempt: ${email}`
+  );
 
   try {
+
     setIsLoading(true);
 
-    // Authenticate using PocketBase users collection
-  console.log("Email:", email);
-  console.log("Password:", password);
+    pb.authStore.clear();
 
-  console.log("LOGIN DEBUG:", {
-  email,
-  password,
-  baseUrl: pb.baseURL,
-});
+    console.log(
+      "Before admin login:",
+      pb.authStore.record
+    );
 
-const authData = await pb.collection('users').authWithPassword(
-  email.trim(),
-  password.trim(),
-  { $autoCancel: false }
-);
+    const authData =
+      await pb.collection('crmUsersAuth')
+      .authWithPassword(
+        email.trim(),
+        password.trim()
+      );
 
-console.log("LOGIN SUCCESS:", authData);
+    console.log(
+      "Admin login successful:",
+      authData
+    );
 
-console.log(`[AuthContext] Admin login successful for: ${email}`);
+    console.log(
+      "After admin login:",
+      pb.authStore.record
+    );
 
-// Create temporary admin session object
-const adminUser = {
-  id: authData.record?.id || 'admin',
-  email: authData.record?.email || email,
-  fullName:
-    authData.record?.name ||
-    authData.record?.full_name ||
-    authData.record?.fullName ||
-    'Administrator',
-  role: 'admin',
-  status: 'active',
-};
+    const adminUser = {
 
-    // Save admin session
-    localStorage.setItem('adminUser', JSON.stringify(adminUser));
+      id: authData.record?.id,
+
+      email: authData.record?.email,
+
+      fullName:
+        authData.record?.name ||
+        authData.record?.fullName ||
+        'Administrator',
+
+      role:
+        authData.record?.role ||
+        'admin',
+
+      status: 'active',
+
+    };
+
+    console.log(
+      "Saving adminUser:",
+      adminUser
+    );
+
+    localStorage.setItem(
+      'adminUser',
+      JSON.stringify(adminUser)
+    );
+
+    console.log(
+      "Stored value:",
+      localStorage.getItem('adminUser')
+    );
 
     setCurrentAdmin(adminUser);
+
     setIsAdminLoggedIn(true);
 
     return adminUser;
+
   } catch (error) {
-    console.error(`[AuthContext] Admin login error:`, error);
+
     console.error(
-      `[AuthContext] Admin error details:`,
-      error.response || error.message
+      '[AuthContext] Admin login error:',
+      error
     );
 
-    if (error.status === 404 || error.status === 400) {
-      throw new Error('Invalid email or password');
+    console.error(
+      '[AuthContext] Admin error details:',
+      error.response ||
+      error.message
+    );
+
+    if (
+      error.status === 400 ||
+      error.status === 404
+    ) {
+
+      throw new Error(
+        'Invalid email or password'
+      );
+
     }
 
     throw new Error(
-      error.message || 'Login failed due to a server error.'
+      error.message ||
+      'Admin login failed'
     );
-  } finally {
-    setIsLoading(false);
-  }
-};
 
-  const logoutAdmin = () => {
+  } finally {
+
+    setIsLoading(false);
+
+  }
+
+};
+ 
+   const logoutAdmin = () => {
     console.log(`[AuthContext] Logging out admin...`);
     localStorage.removeItem('adminUser');
+    pb.authStore.clear();
     setCurrentAdmin(null);
     setIsAdminLoggedIn(false);
     navigate('/admin/login');

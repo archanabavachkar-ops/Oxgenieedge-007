@@ -27,26 +27,26 @@ pocketbaseClient.autoCancellation(false);
 let authPromise = null;
 
 pocketbaseClient.beforeSend = async function (url, options) {
+
     if (url.includes('/api/collections/_superusers/auth-with-password')) {
         return { url, options };
     }
 
     if (!pocketbaseClient.authStore.isValid && !authPromise) {
-        authPromise = pocketbaseClient.collection('_superusers').authWithPassword(
-            process.env.PB_SUPERUSER_EMAIL,
-            process.env.PB_SUPERUSER_PASSWORD,
-        ).finally(() => {
-            authPromise = null;
-        });
+
+        authPromise = pocketbaseClient
+            .collection('_superusers')
+            .authWithPassword(
+                process.env.PB_SUPERUSER_EMAIL,
+                process.env.PB_SUPERUSER_PASSWORD
+            )
+            .finally(() => {
+                authPromise = null;
+            });
     }
 
     if (authPromise) {
         await authPromise;
-    }
-
-    if (pocketbaseClient.authStore.isValid && pocketbaseClient.authStore.token) {
-        options.headers = options.headers || {};
-        options.headers['Authorization'] = pocketbaseClient.authStore.token;
     }
 
     return { url, options };
