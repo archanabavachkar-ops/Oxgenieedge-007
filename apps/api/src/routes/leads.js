@@ -3,21 +3,23 @@ import pb from '../utils/pocketbaseClient.js';
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
 
+// ----------------------------
+// CREATE LEAD
+// ----------------------------
+router.post('/', async (req, res) => {
   try {
 
     const lead = await pb.collection('leads').create({
       name: req.body.name,
       email: req.body.email,
       mobile: req.body.mobile,
-
       serviceInterest: req.body.serviceInterest || '',
       description: req.body.description || '',
-
-      source: 'Website',
-      priority: 'Warm',
-      status: 'New Lead'
+      source: req.body.source || 'Website',
+      priority: req.body.priority || 'Warm',
+      status: req.body.status || 'New Lead',
+      assignedTo: req.body.assignedTo || ''
     });
 
     res.json({
@@ -25,53 +27,96 @@ router.post('/', async (req, res) => {
       data: lead
     });
 
-  } catch (error) {
+  } catch (err) {
 
-    console.error(error);
+    console.error(err);
 
     res.status(500).json({
       success: false,
-      message: error.message,
-      full: error
+      error: err.message
+    });
+
+  }
+});
+
+
+// ----------------------------
+// GET ALL LEADS
+// ----------------------------
+router.get('/', async (req, res) => {
+
+  try {
+
+    const leads = await pb.collection('leads').getFullList({
+      sort: '-created'
+    });
+
+    res.json({
+      success: true,
+      data: leads
+    });
+
+  } catch (err) {
+
+    res.status(500).json({
+      success: false,
+      error: err.message
     });
 
   }
 
 });
 
-router.post('/', async (req, res) => {
+
+// ----------------------------
+// UPDATE LEAD
+// ----------------------------
+router.put('/:id', async (req, res) => {
 
   try {
 
-    const lead = await pb.collection('leads').create({
-
-      name: req.body.name,
-      email: req.body.email,
-      mobile: req.body.mobile,
-
-      serviceInterest: req.body.serviceInterest || '',
-      description: req.body.description || '',
-
-      source: 'Website',
-      priority: 'Warm',
-      status: 'New Lead'
-
-    });
+    const lead = await pb.collection('leads').update(
+      req.params.id,
+      req.body
+    );
 
     res.json({
       success: true,
       data: lead
     });
 
-  } catch (error) {
+  } catch (err) {
 
-    console.error(
-      JSON.stringify(error.response, null, 2)
-    );
+    console.error(err);
 
     res.status(500).json({
       success: false,
-      error: error.response || error.message
+      error: err.message
+    });
+
+  }
+
+});
+
+
+// ----------------------------
+// DELETE LEAD
+// ----------------------------
+router.delete('/:id', async (req, res) => {
+
+  try {
+
+    await pb.collection('leads').delete(req.params.id);
+
+    res.json({
+      success: true
+    });
+
+  } catch (err) {
+
+    res.status(500).json({
+      success: false,
+      error: err.message
     });
 
   }

@@ -177,21 +177,24 @@ export default function LeadFormModal({
         const nextFollowUp = new Date();
         nextFollowUp.setDate(nextFollowUp.getDate() + 1);
 
-        await fetch(
-          'https://amusing-happiness-production-81e3.up.railway.app/api/leads',
+        const response = await fetch(
+          `https://amusing-happiness-production-81e3.up.railway.app/api/leads/${lead.id}`,
           {
-            method: 'POST',
+            method: 'PUT',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-              ...formData,
-              nextFollowUpDate: nextFollowUp.toISOString(),
-            })
-          }
-        );
+            body: JSON.stringify(formData),
+        }
+      );
 
-        toast.success('Lead created successfully');
+      const result = await response.json();
+
+if (!response.ok) {
+  throw new Error(result.message || 'Failed to update lead');
+}
+
+toast.success('Lead updated successfully');
 
       }
 
@@ -216,6 +219,8 @@ export default function LeadFormModal({
     }
 
   };
+
+  console.log('CRM Users Loaded:', crmUsers);
 
   return (
 

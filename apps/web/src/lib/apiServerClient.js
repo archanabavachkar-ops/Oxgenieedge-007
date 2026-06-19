@@ -1,7 +1,5 @@
 const API_SERVER_URL =
-  import.meta.env.DEV
-    ? "http://localhost:3001/api"
-    : "/hcgi/api";
+  `${import.meta.env.VITE_API_BASE_URL}/api`;
 
 const apiServerClient = {
     fetch: async (url, options = {}) => {
