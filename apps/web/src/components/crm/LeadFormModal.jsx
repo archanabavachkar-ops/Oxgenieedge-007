@@ -162,42 +162,46 @@ export default function LeadFormModal({
 
       if (lead?.id) {
 
-        const response = await fetch(
-          `https://amusing-happiness-production-81e3.up.railway.app/api/leads/`,
-          {
+    const response = await fetch(
+        `https://amusing-happiness-production-81e3.up.railway.app/api/leads/${lead.id}`,
+        {
             method: "PUT",
             headers: {
-              "Content-Type": "application/json"
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(formData)
-          }
-        );
-
-      } else {
-
-        const nextFollowUp = new Date();
-        nextFollowUp.setDate(nextFollowUp.getDate() + 1);
-
-        const response = await fetch(
-          `https://amusing-happiness-production-81e3.up.railway.app/api/leads/`,
-          {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
         }
-      );
+    );
 
-      const result = await response.json();
+     const result = await response.json();
 
-if (!response.ok) {
-  throw new Error(result.message || 'Failed to update lead');
+      if (!response.ok || !result.success) {
+      throw new Error(result.message || "Failed to update lead");
+    }
+
+toast.success("Lead updated successfully");
+
+} else {
+
+    const response = await fetch(
+        "https://amusing-happiness-production-81e3.up.railway.app/api/leads",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        }
+    );
+
+    const result = await response.json();
+
+      if (!response.ok || !result.success) {
+      throw new Error(result.message || "Failed to create lead");
+    }
+
+    toast.success("Lead created successfully");
 }
-
-toast.success('Lead updated successfully');
-
-      }
 
       if (onSuccess) {
         onSuccess();
