@@ -196,21 +196,11 @@ export const AuthProvider = ({ children }) => {
       error.message
     );
 
-    if (
-      error.status === 400 ||
-      error.status === 404
-    ) {
+    console.log("PocketBase Error:", error);
+    console.log("Status:", error.status);
+    console.log("Response:", error.response);
 
-      throw new Error(
-        'Invalid email or password'
-      );
-
-    }
-
-    throw new Error(
-      error.message ||
-      'Admin login failed'
-    );
+    throw error;
 
   } finally {
 
