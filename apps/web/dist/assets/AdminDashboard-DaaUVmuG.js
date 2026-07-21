@@ -1,1 +1,0 @@
-import{j as s,H as r,g as a}from"./index-BlrOmv55.js";const t=()=>s.jsxs(s.Fragment,{children:[s.jsx(r,{children:s.jsx("title",{children:"Admin Dashboard - CRM"})}),s.jsx(a,{})]});export{t as default};
