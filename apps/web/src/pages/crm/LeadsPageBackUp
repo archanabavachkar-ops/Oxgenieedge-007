@@ -36,7 +36,7 @@ export default function LeadsPage() {
   const isAdmin = currentAdmin?.role === 'Admin' || currentAdmin?.role === 'Manager' || currentAdmin?.role === 'CEO';
 
   const [leads, setLeads] = useState([]);
-  const [agentsMap, setAgentsMap] = useState({});
+  const [leadOwner, setLeadOwner] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -62,7 +62,7 @@ export default function LeadsPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const agentsList = await pb.collection('admin_users').getFullList({ $autoCancel: false }).catch(() => []);
+      const agentsList = await pb.collection('crmUsersAuth').getFullList({ $autoCancel: false }).catch(() => []);
       const map = {};
       agentsList.forEach(a => map[a.id] = a);
       setAgentsMap(map);
@@ -105,16 +105,16 @@ export default function LeadsPage() {
         const matchesSearch = (lead.name?.toLowerCase().includes(term)) ||
                               (lead.email?.toLowerCase().includes(term)) ||
                               (lead.mobile?.toLowerCase().includes(term)) ||
-                              (lead.company?.toLowerCase().includes(term));
+                              (lead.companyName?.toLowerCase().includes(term));
         if (!matchesSearch) return false;
       }
       if (statusFilter !== 'all' && lead.status !== statusFilter) return false;
       if (priorityFilter !== 'all' && lead.priority !== priorityFilter) return false;
       if (sourceFilter !== 'all' && lead.source !== sourceFilter) return false;
       if (agentFilter !== 'all') {
-        if (agentFilter === 'unassigned' && lead.assignedTo) return false;
-        if (agentFilter !== 'unassigned' && lead.assignedTo !== agentFilter) return false;
-      }
+        if (agentFilter === 'unassigned' && lead.leadOwner) return false;
+        if (agentFilter !== 'unassigned' && lead.leadOwner !== agentFilter) return false;
+      }leadOwner
       if (dateRange?.from) {
         const createdDate = new Date(lead.created);
         if (createdDate < dateRange.from) return false;
@@ -139,8 +139,8 @@ export default function LeadsPage() {
         let aVal = a[sortConfig.key];
         let bVal = b[sortConfig.key];
         if (sortConfig.key === 'assignedTo') {
-          aVal = agentsMap[aVal]?.fullName || 'Unassigned';
-          bVal = agentsMap[bVal]?.fullName || 'Unassigned';
+          aVal = leadOwner[aVal]?.displayName || 'Unassigned';
+          bVal = leadOwner[bVal]?.displayName || 'Unassigned';
         }
         if (typeof aVal === 'string') aVal = aVal.toLowerCase();
         if (typeof bVal === 'string') bVal = bVal.toLowerCase();
@@ -150,7 +150,7 @@ export default function LeadsPage() {
       });
     }
     return sortableItems;
-  }, [filteredLeads, sortConfig, agentsMap]);
+  }, [filteredLeads, sortConfig, leadOwner]);
 
   const totalPages = Math.ceil(sortedLeads.length / pageSize);
   const paginatedLeads = sortedLeads.slice((currentPage - 1) * pageSize, currentPage * pageSize);
@@ -340,7 +340,7 @@ export default function LeadsPage() {
                   ) : (
                     paginatedLeads.map((lead) => {
                       const isSelected = selectedLeadIds.has(lead.id);
-                      const assignedAgent = agentsMap[lead.assignedTo];
+                      const assignedAgent = leadOwner[lead.assignedTo];
 
                       return (
                         <TableRow key={lead.id} className={cn("transition-colors hover:bg-[#F8FAFC] border-b border-[#E2E8F0]", isSelected && "bg-[#FF6B00]/5 hover:bg-[#FF6B00]/10")}>
@@ -361,8 +361,8 @@ export default function LeadsPage() {
                           <TableCell className="hidden lg:table-cell">
                             {assignedAgent ? (
                               <div className="flex items-center gap-2">
-                                <Avatar className="h-8 w-8 border border-[#E2E8F0]"><AvatarFallback className="bg-[#FF6B00]/10 text-[#FF6B00] font-bold text-xs">{assignedAgent.fullName?.charAt(0) || 'A'}</AvatarFallback></Avatar>
-                                <span className="text-sm font-semibold text-[#0F172A]">{assignedAgent.fullName || 'Unknown Agent'}</span>
+                                <Avatar className="h-8 w-8 border border-[#E2E8F0]"><AvatarFallback className="bg-[#FF6B00]/10 text-[#FF6B00] font-bold text-xs">{assignedAgent.displayName?.charAt(0) || 'A'}</AvatarFallback></Avatar>
+                                <span className="text-sm font-semibold text-[#0F172A]">{assignedAgent.displayName || 'Unknown Agent'}</span>
                               </div>
                             ) : (
                               <span className="text-sm text-[#94A3B8] font-medium italic">Unassigned</span>
