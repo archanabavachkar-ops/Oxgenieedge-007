@@ -22,12 +22,16 @@ router.post('/', async (req, res) => {
       name: req.body.name,
       email: req.body.email,
       mobile: req.body.mobile,
-      serviceInterest: req.body.serviceInterest || '',
-      description: req.body.description || '',
+      companyName: req.body.companyName || '',
+
       source: req.body.source || 'Website',
       priority: req.body.priority || 'Warm',
       status: req.body.status || 'New Lead',
-      assignedTo: req.body.assignedTo || ''
+
+      leadOwner: req.body.leadOwner || '',
+
+      serviceInterest: req.body.serviceInterest || '',
+      description: req.body.description || ''
     });
 
     res.json({
@@ -94,10 +98,11 @@ router.get('/', async (req, res) => {
 // UPDATE LEAD
 // ----------------------------
 router.put('/:id', async (req, res) => {
-
   try {
+    console.log("Lead ID:", req.params.id);
+    console.log("Request Body:", JSON.stringify(req.body, null, 2));
 
-    const lead = await pb.collection('leads').update(
+    const lead = await pb.collection("leads").update(
       req.params.id,
       req.body
     );
@@ -108,16 +113,15 @@ router.put('/:id', async (req, res) => {
     });
 
   } catch (err) {
-
-    console.error(err);
+    console.error("PocketBase Error:", err);
 
     res.status(500).json({
       success: false,
-      error: err.message
+      message: err.message,
+      data: err.data,
+      response: err.response
     });
-
   }
-
 });
 
 

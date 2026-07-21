@@ -34,17 +34,20 @@ const SOURCE_OPTIONS = [
 ];
 
 const STATUS_OPTIONS = [
-  { value: 'New Lead', label: 'New Lead' },
-  { value: 'Attempted Contact', label: 'Attempted Contact' },
-  { value: 'Connected', label: 'Connected' },
-  { value: 'Qualified', label: 'Qualified' },
-  { value: 'Won', label: 'Won' },
-  { value: 'Lost', label: 'Lost' }
+  { value: "New Lead", label: "New Lead" },
+  { value: "Attempted Contact", label: "Attempted Contact" },
+  { value: "Connected", label: "Connected" },
+  { value: "Qualified", label: "Qualified" },
+  { value: "Follow-up Scheduled", label: "Follow-up Scheduled" },
+  { value: "Proposal Sent", label: "Proposal Sent" },
+  { value: "Negotiation", label: "Negotiation" },
+  { value: "Won", label: "Won" },
+  { value: "Lost", label: "Lost" }
 ];
 
 const PRIORITY_OPTIONS = [
   'Hot',
-  'Medium',
+  'Warm',
   'Cold'
 ];
 
@@ -63,11 +66,11 @@ export default function LeadFormModal({
     name: '',
     email: '',
     mobile: '',
-    company: '',
+    companyName: '',
     status: 'New Lead',
-    priority: 'Medium',
+    priority: 'Warm',
     source: 'Website',
-    assignedTo: '',
+    leadOwner: '',
   });
 
   useEffect(() => {
@@ -78,11 +81,11 @@ export default function LeadFormModal({
         name: lead.name || '',
         email: lead.email || '',
         mobile: lead.mobile || '',
-        company: lead.company || '',
+        companyName: lead.companyName || '',
         status: lead.status || 'New Lead',
-        priority: lead.priority || 'Medium',
+        priority: lead.priority || 'Warm',
         source: lead.source || 'Website',
-        assignedTo: lead.assignedTo || '',
+        leadOwner: lead.leadOwner || '',
       });
 
     } else if (isOpen) {
@@ -91,11 +94,11 @@ export default function LeadFormModal({
         name: '',
         email: '',
         mobile: '',
-        company: '',
+        companyName: '',
         status: 'New Lead',
-        priority: 'Medium',
+        priority: 'Warm',
         source: 'Website',
-        assignedTo: '',
+        leadOwner: '',
       });
 
     }
@@ -159,18 +162,16 @@ export default function LeadFormModal({
 
       if (lead?.id) {
 
-        await fetch(
-          `https://amusing-happiness-production-81e3.up.railway.app/api/leads/${lead.id}`,
+        const response = await fetch(
+          `https://amusing-happiness-production-81e3.up.railway.app/api/leads/`,
           {
-            method: 'PUT',
+            method: "PUT",
             headers: {
-              'Content-Type': 'application/json'
+              "Content-Type": "application/json"
             },
             body: JSON.stringify(formData)
           }
         );
-
-        toast.success('Lead updated successfully');
 
       } else {
 
@@ -178,7 +179,7 @@ export default function LeadFormModal({
         nextFollowUp.setDate(nextFollowUp.getDate() + 1);
 
         const response = await fetch(
-          `https://amusing-happiness-production-81e3.up.railway.app/api/leads/${lead.id}`,
+          `https://amusing-happiness-production-81e3.up.railway.app/api/leads/`,
           {
             method: 'PUT',
             headers: {
@@ -280,10 +281,10 @@ toast.success('Lead updated successfully');
               </Label>
 
               <Input
-                id="company"
-                value={formData.company}
+                id="companyName"
+                value={formData.companyName}
                 onChange={(e) =>
-                  handleChange('company', e.target.value)
+                  handleChange('companyName', e.target.value)
                 }
                 placeholder="Acme Inc."
               />
@@ -432,18 +433,18 @@ toast.success('Lead updated successfully');
 
           <div className="space-y-2">
 
-            <Label htmlFor="assignedTo">
+            <Label htmlFor="leadOwner">
               Assign To
             </Label>
 
             <Select
-              value={formData.assignedTo}
+              value={formData.leadOwner}
               onValueChange={(val) =>
-                handleChange('assignedTo', val)
+                handleChange('leadOwner', val)
               }
             >
 
-              <SelectTrigger id="assignedTo">
+              <SelectTrigger id="leadOwner">
                 <SelectValue placeholder="Select CRM User" />
               </SelectTrigger>
 
@@ -453,7 +454,7 @@ toast.success('Lead updated successfully');
 
                   <SelectItem
                     key={user.userId}
-                    value={user.fullName}
+                    value={user.userId}
                   >
                     {user.fullName} ({user.role})
                   </SelectItem>
