@@ -4,16 +4,28 @@ import logger from '../utils/logger.js';
 
 export class AssignmentService {
   static async getAvailableAgents() {
-    try {
-      const agents = await pb.collection('crm_users').getFullList({
-        filter: 'status = "Active" && role = "Admin"', // Simplified for example, maybe "Agent"
+  try {
+
+    const agents = await pb
+      .collection("crmUsersAuth")
+      .getFullList({
+        filter: 'employmentStatus="Active"',
+        sort: "first_name",
       });
-      return agents;
-    } catch (error) {
-      logger.error('Failed to get available agents', { error: error.message });
-      throw error;
-    }
+
+    logger.info(`Found ${agents.length} active users`);
+
+    return agents;
+
+  } catch (error) {
+
+    logger.error("Failed to get available agents", {
+      error: error.message,
+    });
+
+    throw error;
   }
+}
 
   static async assignToAgent(leadId, agentId) {
     try {
