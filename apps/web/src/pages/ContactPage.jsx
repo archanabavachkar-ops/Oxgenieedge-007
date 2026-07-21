@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import Header from "@/components/Header.jsx";
 import Footer from "@/components/Footer.jsx";
+import { apiServerClient } from '@/lib/apiServerClient';
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -46,20 +47,13 @@ export default function ContactPage() {
         name: formData.name,
         email: formData.email,
         mobile: formData.phone,
-        company: formData.company,
-        designation: formData.designation,
-        budgetRange: formData.budgetRange,
-        preferredContact: formData.preferredContact,
+        companyName: formData.company,
         serviceInterest: formData.subject,
-        description: formData.message,
-
-        source: "website_contact_form",
-        status: "new",
-        stage: "incoming"
+        description: formData.message
       };
 
       // (3) Call apiServerClient.fetch
-      const response = await fetch('https://amusing-happiness-production-81e3.up.railway.app/api/leads', {
+      const response = await apiServerClient.fetch('/leads', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

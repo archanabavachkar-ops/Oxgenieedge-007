@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button.jsx';
 import { Label } from '@/components/ui/label.jsx';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
-import pb from '@/lib/pocketbaseClient.js';
+import { apiServerClient } from '@/lib/apiServerClient.js';
 
 export default function LeadCaptureForm({ source = 'home', buttonText = "Get Started", className = "" }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,6 +17,8 @@ export default function LeadCaptureForm({ source = 'home', buttonText = "Get Sta
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("🔥 LANDING PAGE HANDLESUBMIT FIRED");
+    alert("LANDING PAGE HANDLESUBMIT FIRED");
     
     // Client-side validation
     if (!formData.name.trim()) {
@@ -32,23 +34,27 @@ export default function LeadCaptureForm({ source = 'home', buttonText = "Get Sta
     setIsLoading(true);
     try {
       // Map to exact collection schema
-  const response = await fetch(
-    'https://amusing-happiness-production-81e3.up.railway.app/api/leads',
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    body: JSON.stringify({
-      name: formData.name.trim(),
-      email: formData.email.trim().toLowerCase(),
-      mobile: formData.mobile.trim(),
-      source: source,
-      priority: 'Medium',
-      status: 'new'
-    })
-    }
-  );
+      console.log("Submitting lead...");
+console.log(formData);
+
+const response = await apiServerClient.fetch('/leads', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: formData.name.trim(),
+    email: formData.email.trim().toLowerCase(),
+    mobile: formData.mobile.trim(),
+    source: "Website",
+    priority: "Warm",
+    status: "New Lead",
+    serviceInterest: "Landing Page"
+  })
+});
+
+console.log("Response received");
+console.log(response);
 
   const result = await response.json();
 

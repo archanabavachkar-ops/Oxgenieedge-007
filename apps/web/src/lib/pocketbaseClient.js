@@ -1,8 +1,8 @@
-import PocketBase from 'pocketbase';
+import PocketBase from "pocketbase";
 
-const POCKETBASE_API_URL =
-  'https://web-production-d6416a.up.railway.app';
+const pb = new PocketBase(
+    import.meta.env.VITE_POCKETBASE_URL ||
+    "https://web-production-d6416a.up.railway.app"
+);
 
-const pocketbaseClient = new PocketBase(POCKETBASE_API_URL);
-
-export default pocketbaseClient;
+export default pb;

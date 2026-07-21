@@ -120,12 +120,6 @@ const AdminLoginPage = () => {
               )}
             </Button>
           </form>
-
-          <div className="mt-6 pt-6 border-t border-border">
-            <p className="text-sm text-center text-muted-foreground">
-              Default credentials: admin@oxgenieedge.com / admin@2026
-            </p>
-          </div>
         </CardContent>
       </Card>
     </div>

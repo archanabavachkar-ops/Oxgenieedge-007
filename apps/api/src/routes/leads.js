@@ -1,14 +1,22 @@
 import express from 'express';
 import pb from '../utils/pocketbaseClient.js';
 
-const router = express.Router();
+console.log("✅ LOADED: routes/leads.js");
 
+const router = express.Router();
 
 // ----------------------------
 // CREATE LEAD
 // ----------------------------
+// ----------------------------
+// CREATE LEAD
+// ----------------------------
 router.post('/', async (req, res) => {
+
   try {
+
+    console.log("POST /api/leads");
+    console.log(req.body);
 
     const lead = await pb.collection('leads').create({
       name: req.body.name,
@@ -29,27 +37,39 @@ router.post('/', async (req, res) => {
 
   } catch (err) {
 
-    console.error(err);
+    console.log("========== CREATE LEAD FAILED ==========");
+    console.log("Message:", err.message);
+    console.dir(err, { depth: null });
+
+    if (err.response) {
+      console.log("PocketBase Response:");
+      console.dir(err.response, { depth: null });
+    }
 
     res.status(500).json({
       success: false,
-      error: err.message
+      message: err.message,
+      response: err.response || null
     });
 
   }
-});
 
+});
 
 // ----------------------------
 // GET ALL LEADS
 // ----------------------------
 router.get('/', async (req, res) => {
 
+  console.log("✅ GET /api/leads called");
+
   try {
 
     const leads = await pb.collection('leads').getFullList({
       sort: '-created'
     });
+
+    console.log("Leads:", leads.length);
 
     res.json({
       success: true,
@@ -58,6 +78,9 @@ router.get('/', async (req, res) => {
 
   } catch (err) {
 
+    console.error("GET LEADS ERROR");
+    console.error(err);
+
     res.status(500).json({
       success: false,
       error: err.message
@@ -66,7 +89,6 @@ router.get('/', async (req, res) => {
   }
 
 });
-
 
 // ----------------------------
 // UPDATE LEAD

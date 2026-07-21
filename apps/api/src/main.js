@@ -66,6 +66,7 @@ app.use('/api/integrations/whatsapp', whatsappLimiter);
 // app.use('/hcgi/api', routes());
 
 // Also mount at /api for backward compatibility
+console.log("Mounting API routes...");
 app.use('/api', routes());
 
 // Mount integration routers with rate limiters applied
@@ -85,7 +86,15 @@ app.use(errorHandler);
 
 // Start Server
 const port = process.env.PORT || 3001;
-
+app.get('/api/test', (req, res) => {
+  console.log("TEST ROUTE HIT");
+  res.json({
+    success: true,
+    message: "THIS IS MY LOCAL API"
+  });
+});
+console.log("CURRENT DIRECTORY =", process.cwd());
+console.log("MAIN FILE =", import.meta.url);
 app.listen(port, () => {
   logger.info(`🚀 API Server running on http://localhost:${port}`);
   logger.info(`📍 Routes available at:`);

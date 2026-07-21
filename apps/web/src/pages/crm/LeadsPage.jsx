@@ -36,7 +36,6 @@ export default function LeadsPage() {
   const isAdmin = currentAdmin?.role === 'Admin' || currentAdmin?.role === 'Manager' || currentAdmin?.role === 'CEO';
 
   const [leads, setLeads] = useState([]);
-  const [agentsMap, setAgentsMap] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -61,26 +60,36 @@ export default function LeadsPage() {
   const fetchData = async () => {
     setIsLoading(true);
     setError(null);
+
     try {
-      const agentsList = await pb.collection('admin_users').getFullList({ $autoCancel: false }).catch(() => []);
-      const map = {};
-      agentsList.forEach(a => map[a.id] = a);
-      setAgentsMap(map);
+        console.log("Auth:", pb.authStore.model);
+        console.log("Token:", pb.authStore.token);
+        console.log("Collection:", pb.authStore.model?.collectionName);
+        console.log("CollectionId:", pb.authStore.model?.collectionId);
+        console.log(pb.authStore.isValid);
+        console.log("Auth valid:", pb.authStore.isValid);
+        console.log("Token:", pb.authStore.token);
+        console.log("Model:", pb.authStore.model);
+        console.log("Headers auth:", pb.authStore.token.length);
+        const records = await pb.collection("leads").getFullList({
+          sort: "-created",
+          expand: "leadOwner",
+          $autoCancel: false,
+        });
 
-      const records = await pb.collection('leads').getFullList({
-        sort: '-created',
-        $autoCancel: false,
-      });
+        console.log(records);
 
-      setLeads(records);
+        console.log("PocketBase returned:", records);
+
+        setLeads(records);
+
     } catch (err) {
-      console.error('[LeadsPage] Error fetching leads data:', err);
-      setError('Failed to load leads data.');
-      toast.error('Could not fetch leads');
+        console.error(err);
+        toast.error("Failed to load leads");
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
-  };
+};
 
   useEffect(() => {
     if (currentAdmin) fetchData();
@@ -97,15 +106,15 @@ export default function LeadsPage() {
         const matchesSearch = (lead.name?.toLowerCase().includes(term)) ||
                               (lead.email?.toLowerCase().includes(term)) ||
                               (lead.mobile?.toLowerCase().includes(term)) ||
-                              (lead.company?.toLowerCase().includes(term));
+                              (lead.companyName?.toLowerCase().includes(term))
         if (!matchesSearch) return false;
       }
       if (statusFilter !== 'all' && lead.status !== statusFilter) return false;
       if (priorityFilter !== 'all' && lead.priority !== priorityFilter) return false;
       if (sourceFilter !== 'all' && lead.source !== sourceFilter) return false;
       if (agentFilter !== 'all') {
-        if (agentFilter === 'unassigned' && lead.assignedTo) return false;
-        if (agentFilter !== 'unassigned' && lead.assignedTo !== agentFilter) return false;
+        if (agentFilter === 'unassigned' && lead.leadOwner) return false;
+        if (agentFilter !== 'unassigned' && lead.leadOwner !== agentFilter) return false;
       }
       if (dateRange?.from) {
         const createdDate = new Date(lead.created);
@@ -117,7 +126,8 @@ export default function LeadsPage() {
       return true;
     });
   }, [leads, searchTerm, statusFilter, priorityFilter, sourceFilter, agentFilter, dateRange]);
-
+  console.log("Filtered:", filteredLeads.length);
+  
   const handleSort = (key) => {
     let direction = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') direction = 'desc';
@@ -130,9 +140,9 @@ export default function LeadsPage() {
       sortableItems.sort((a, b) => {
         let aVal = a[sortConfig.key];
         let bVal = b[sortConfig.key];
-        if (sortConfig.key === 'assignedTo') {
-          aVal = agentsMap[aVal]?.fullName || 'Unassigned';
-          bVal = agentsMap[bVal]?.fullName || 'Unassigned';
+        if (sortConfig.key === "leadOwner") {
+          aVal = a.expand?.leadOwner?.displayName || "Unassigned";
+          bVal = b.expand?.leadOwner?.displayName || "Unassigned";
         }
         if (typeof aVal === 'string') aVal = aVal.toLowerCase();
         if (typeof bVal === 'string') bVal = bVal.toLowerCase();
@@ -142,10 +152,16 @@ export default function LeadsPage() {
       });
     }
     return sortableItems;
-  }, [filteredLeads, sortConfig, agentsMap]);
+  }, [filteredLeads, sortConfig]);
 
   const totalPages = Math.ceil(sortedLeads.length / pageSize);
   const paginatedLeads = sortedLeads.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  useEffect(() => {
+    console.log("Leads:", leads);
+    console.log("Filtered:", filteredLeads);
+    console.log("Sorted:", sortedLeads);
+    console.log("Paginated:", paginatedLeads);
+  }, [leads, filteredLeads, sortedLeads, paginatedLeads]);
 
   const metrics = useMemo(() => {
     if (!leads.length) return { total: 0, new24h: 0 };
@@ -318,8 +334,8 @@ export default function LeadsPage() {
                     <TableHead className="text-white font-semibold cursor-pointer" onClick={() => handleSort('priority')}>
                       <div className="flex items-center">Priority <SortIcon columnKey="priority" /></div>
                     </TableHead>
-                    <TableHead className="text-white font-semibold cursor-pointer hidden lg:table-cell" onClick={() => handleSort('assignedTo')}>
-                      <div className="flex items-center">Assigned To <SortIcon columnKey="assignedTo" /></div>
+                    <TableHead className="text-white font-semibold cursor-pointer hidden lg:table-cell" onClick={() => handleSort('leadOwner')}>
+                      <div className="flex items-center">Assigned To <SortIcon columnKey="leadOwner" /></div>
                     </TableHead>
                     <TableHead className="text-right pr-6 text-white font-semibold">Actions</TableHead>
                   </TableRow>
@@ -332,7 +348,7 @@ export default function LeadsPage() {
                   ) : (
                     paginatedLeads.map((lead) => {
                       const isSelected = selectedLeadIds.has(lead.id);
-                      const assignedAgent = agentsMap[lead.assignedTo];
+                      const assignedAgent = lead.expand?.leadOwner;
 
                       return (
                         <TableRow key={lead.id} className={cn("transition-colors hover:bg-[#F8FAFC] border-b border-[#E2E8F0]", isSelected && "bg-[#FF6B00]/5 hover:bg-[#FF6B00]/10")}>
@@ -353,8 +369,8 @@ export default function LeadsPage() {
                           <TableCell className="hidden lg:table-cell">
                             {assignedAgent ? (
                               <div className="flex items-center gap-2">
-                                <Avatar className="h-8 w-8 border border-[#E2E8F0]"><AvatarFallback className="bg-[#FF6B00]/10 text-[#FF6B00] font-bold text-xs">{assignedAgent.fullName?.charAt(0) || 'A'}</AvatarFallback></Avatar>
-                                <span className="text-sm font-semibold text-[#0F172A]">{assignedAgent.fullName || 'Unknown Agent'}</span>
+                                <Avatar className="h-8 w-8 border border-[#E2E8F0]"><AvatarFallback className="bg-[#FF6B00]/10 text-[#FF6B00] font-bold text-xs">{assignedAgent.displayName?.charAt(0) || 'A'}</AvatarFallback></Avatar>
+                                <span className="text-sm font-semibold text-[#0F172A]">{assignedAgent.displayName || 'Unknown Agent'}</span>
                               </div>
                             ) : (
                               <span className="text-sm text-[#94A3B8] font-medium italic">Unassigned</span>

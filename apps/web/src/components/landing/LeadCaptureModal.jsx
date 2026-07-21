@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Loader2, CheckCircle2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { apiServerClient } from '@/lib/apiServerClient.js';
 
 const LeadCaptureModal = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', company: '' });
@@ -24,27 +25,76 @@ const LeadCaptureModal = ({ isOpen, onClose }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
-    
-    setIsSubmitting(true);
-    
-    // Simulate API Call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSuccess(true);
-      toast({
-        title: "Demo Requested",
-        description: "We'll be in touch shortly to schedule your demo.",
-      });
-      setTimeout(() => {
-        setIsSuccess(false);
-        setFormData({ name: '', email: '', phone: '', company: '' });
-        onClose();
-      }, 2000);
-    }, 1500);
-  };
+  e.preventDefault();
 
+  if (!validate()) return;
+
+  setIsSubmitting(true);
+
+  try {
+
+    const response = await apiServerClient.fetch('/leads', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: formData.name.trim(),
+        email: formData.email.trim().toLowerCase(),
+        mobile: formData.phone.trim(),
+        companyName: formData.company.trim(),
+
+        source: 'Website',
+        priority: 'Warm',
+        status: 'New Lead',
+
+        serviceInterest: 'Free Demo Request',
+        description: 'Landing Page Demo Request'
+      })
+    });
+
+    const result = await response.json();
+
+    console.log("Lead API Response:", result);
+
+    if (!result.success) {
+      throw new Error(result.message || 'Lead creation failed');
+    }
+
+    setIsSuccess(true);
+
+    toast({
+      title: "Demo Requested",
+      description: "We'll be in touch shortly to schedule your demo."
+    });
+
+    setTimeout(() => {
+      setIsSuccess(false);
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        company: ''
+      });
+      onClose();
+    }, 2000);
+
+  } catch (error) {
+
+    console.error("Lead submit error:", error);
+
+    toast({
+      title: "Submission Failed",
+      description: "Unable to save lead. Please try again.",
+      variant: "destructive"
+    });
+
+  } finally {
+
+    setIsSubmitting(false);
+
+  }
+};
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px] bg-card text-card-foreground border-white/10 rounded-2xl shadow-2xl">

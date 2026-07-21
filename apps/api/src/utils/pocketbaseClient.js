@@ -21,62 +21,28 @@ async function waitForHealth({ retries = 10, delayMs = 1000 } = {}) {
 }
 
 const pocketbaseClient = new Pocketbase(POCKETBASE_HOST);
-
-pocketbaseClient.autoCancellation(false);
-
-let authPromise = null;
-
-pocketbaseClient.beforeSend = async function (url, options) {
-
-    if (url.includes('/api/collections/_superusers/auth-with-password')) {
-        return { url, options };
-    }
-
-    if (!pocketbaseClient.authStore.isValid && !authPromise) {
-
-        authPromise = pocketbaseClient
-            .collection('_superusers')
-            .authWithPassword(
-                process.env.PB_SUPERUSER_EMAIL,
-                process.env.PB_SUPERUSER_PASSWORD
-            )
-            .finally(() => {
-                authPromise = null;
-            });
-    }
-
-    if (authPromise) {
-        await authPromise;
-    }
-
-    return { url, options };
-};
+console.log("POCKETBASE_HOST =", POCKETBASE_HOST);
+console.log("EMAIL =", process.env.PB_SUPERUSER_EMAIL);
 
 (async () => {
-    try {
-       // await waitForHealth();
-
-        /*
-if (!pocketbaseClient.authStore.isValid && !authPromise) {
-    authPromise = pocketbaseClient.collection('_superusers').authWithPassword(
+  try {
+    const auth = await pocketbaseClient
+      .collection("_superusers")
+      .authWithPassword(
         process.env.PB_SUPERUSER_EMAIL,
-        process.env.PB_SUPERUSER_PASSWORD,
-    ).finally(() => {
-        authPromise = null;
-    });
-}
-*/
-        
-        if (authPromise) {
-            await authPromise;
-        }
-        
-        logger.info('PocketBase client initialized successfully');
-    } catch (err) {
-        logger.error('Failed to initialize PocketBase client:', err);
+        process.env.PB_SUPERUSER_PASSWORD
+      );
 
-        process.exit(1);
-    }
+    console.log("✅ PocketBase Login Success");
+    console.log("Authenticated:", pocketbaseClient.authStore.isValid);
+    console.log(auth);
+
+  } catch (err) {
+
+    console.log("❌ PocketBase Login Failed");
+    console.dir(err, { depth: null });
+
+  }
 })();
 
 export default pocketbaseClient;

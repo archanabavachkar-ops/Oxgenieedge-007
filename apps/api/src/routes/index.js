@@ -5,9 +5,10 @@ import leadsRouter from './leads.js';
 import whatsappRouter from './integrations/whatsapp.js';
 import crmUsersRouter from './crm-users.js';
 import notificationsRouter from './notifications.js';
-
+console.log("✅ routes/index.js loaded");
 export default function routes() {
   const router = Router();
+  console.log("✅ routes() called");
 
   // Health check endpoint
   router.get('/health', healthCheck);
